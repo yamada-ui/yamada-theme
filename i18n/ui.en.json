@@ -1,0 +1,68 @@
+{
+  "app": {
+    "title": "Yamada Theme",
+    "description": ""
+  },
+  "not-found": {
+    "title": "404: Not found",
+    "description": "Page not found",
+    "heading": "404 | Page Not Found",
+    "message": "You just hit a route that doesn't exist... the sadness.😢",
+    "back-to-app": "Back to App"
+  },
+  "component": {
+    "authors": {
+      "description": "Created by",
+      "unknown": "Unknown"
+    },
+    "tree": {
+      "home": "Home",
+      "request": "Request component",
+      "create": "Create component",
+      "yamada-ui": "Yamada UI",
+      "yamada-colors": "Colors generator"
+    },
+    "component-preview": {
+      "label": "Editable example",
+      "tab": {
+        "preview": "preview",
+        "code": "code"
+      },
+      "control-button": {
+        "open": "Show more",
+        "close": "Show less"
+      },
+      "back": "back",
+      "direction": {
+        "vertical": "vertical",
+        "horizontal": "horizontal"
+      },
+      "code": {
+        "open": "code",
+        "close": "close"
+      }
+    },
+    "forms": {
+      "search": {
+        "message": "Search the components",
+        "placeholder": "Search the components"
+      }
+    },
+    "category-group": {
+      "count": "{label} categories",
+      "back-to": "Back to all category group"
+    },
+    "category": {
+      "back-to": "Back to category group",
+      "count": "{label} components"
+    },
+    "components": {
+      "title": " components",
+      "count": "{label} components",
+      "back-to": "Back to all category group"
+    },
+    "footer": {
+      "description": "Built by `Hirotomo Yamada` and `these awesome people`"
+    }
+  }
+}

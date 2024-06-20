@@ -1,0 +1,68 @@
+{
+  "app": {
+    "title": "Yamada Theme",
+    "description": ""
+  },
+  "not-found": {
+    "title": "404: 見つかりません",
+    "description": "ページが見つかりません",
+    "heading": "404 | ページが見つかりません",
+    "message": "存在しないページにぶち当たってしまった…悲しいですね。😢",
+    "back-to-app": "アプリにもどる"
+  },
+  "component": {
+    "authors": {
+      "description": "作者",
+      "unknown": "不明"
+    },
+    "tree": {
+      "home": "ホーム",
+      "request": "コンポーネントをリクエストする",
+      "create": "コンポーネントを作る",
+      "yamada-ui": "Yamada UI",
+      "yamada-colors": "カラージェネレーター"
+    },
+    "component-preview": {
+      "label": "編集可能な例",
+      "tab": {
+        "preview": "プレビュー",
+        "code": "コード"
+      },
+      "control-button": {
+        "open": "もっと見る",
+        "close": "とじる"
+      },
+      "back": "戻る",
+      "direction": {
+        "vertical": "縦並び",
+        "horizontal": "横並び"
+      },
+      "code": {
+        "open": "コード",
+        "close": "閉じる"
+      }
+    },
+    "forms": {
+      "search": {
+        "message": "コンポーネントを検索する",
+        "placeholder": "コンポーネントを検索する"
+      }
+    },
+    "category-group": {
+      "back-to": "すべてのカテゴリグループに戻る",
+      "count": "{label} カテゴリー"
+    },
+    "category": {
+      "back-to": "すべてのカテゴリに戻る",
+      "count": "{label} コンポーネント"
+    },
+    "components": {
+      "back-to": "すべてのカテゴリグループに戻る",
+      "title": "のコンポーネント",
+      "count": "{label} コンポーネント"
+    },
+    "footer": {
+      "description": "このアプリケーションは、`Hirotomo Yamada`と`愉快な仲間たち`によって開発されました。"
+    }
+  }
+}
