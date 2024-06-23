@@ -1,5 +1,5 @@
 {
-  "name": "yamada-components",
+  "name": "yamada-theme",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,18 +10,10 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "gen:category-group": "plop category-group",
-    "gen:category": "plop category",
-    "gen:component": "plop component",
-    "gen:search": "tsx scripts/search-content",
-    "gen:contributors": "tsx scripts/contributors",
     "format": "prettier --write .",
     "format:check": "prettier --check --cache .",
     "format:write": "prettier --write --cache .",
     "quality": "pnpm format:check && pnpm lint && pnpm typecheck",
-    "observe:issue": "tsx scripts/observe-issues",
-    "observe:pr": "tsx scripts/observe-pull-requests",
-    "reviewer:pr": "tsx scripts/reviewer-pull-requests",
     "clean": "rimraf .next",
     "clean:all": "rimraf .next node_modules"
   },
@@ -70,7 +62,6 @@
     "eslint-plugin-unused-imports": "^4.0.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
-    "plop": "^4.0.1",
     "prettier": "^3.3.2",
     "rimraf": "^5.0.7",
     "tsx": "4.12.1",
