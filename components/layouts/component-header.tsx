@@ -20,17 +20,25 @@ import {
 import { NextLinkIconButton, Tree } from "components/navigation"
 import { MobileMenu } from "components/overlay"
 import { CONSTANT } from "constant"
-import type { CodeDirection } from "layouts/component-layout"
+import type { ThemeDirection } from "layouts/component-layout"
 
 export type ComponentHeaderProps = StackProps & {
-  codeDirection: CodeDirection
-  isCodePreviewOpen: boolean
-  onCodePreviewOpen: () => void
+  themeDirection: ThemeDirection
+  isThemePreviewOpen: boolean
+  onThemePreviewOpen: () => void
 }
 
 export const ComponentHeader = memo(
   forwardRef<ComponentHeaderProps, "div">(
-    ({ codeDirection, isCodePreviewOpen, onCodePreviewOpen, ...rest }, ref) => {
+    (
+      {
+        themeDirection: codeDirection,
+        isThemePreviewOpen,
+        onThemePreviewOpen,
+        ...rest
+      },
+      ref,
+    ) => {
       const { isOpen, onOpen, onClose } = useDisclosure()
 
       return (
@@ -45,8 +53,8 @@ export const ComponentHeader = memo(
                 isOpen,
                 onOpen,
                 codeDirection,
-                isCodePreviewOpen,
-                onCodePreviewOpen,
+                isThemePreviewOpen,
+                onThemePreviewOpen,
               }}
             />
           </HStack>
@@ -61,8 +69,8 @@ export const ComponentHeader = memo(
                   isOpen,
                   onClose,
                   codeDirection,
-                  isCodePreviewOpen,
-                  onCodePreviewOpen,
+                  isThemePreviewOpen,
+                  onThemePreviewOpen,
                 }}
               />
             }
@@ -79,17 +87,17 @@ ComponentHeader.displayName = "ComponentHeader"
 
 type ButtonGroupProps = Partial<UseDisclosureReturn> & {
   isMobile?: boolean
-  codeDirection: CodeDirection
-  isCodePreviewOpen: boolean
-  onCodePreviewOpen: () => void
+  codeDirection: ThemeDirection
+  isThemePreviewOpen: boolean
+  onThemePreviewOpen: () => void
 }
 
 const ButtonGroup: FC<ButtonGroupProps> = memo(
   ({
     isMobile,
     codeDirection,
-    isCodePreviewOpen,
-    onCodePreviewOpen,
+    isThemePreviewOpen,
+    onThemePreviewOpen,
     isOpen,
     onOpen,
     onClose,
@@ -98,7 +106,7 @@ const ButtonGroup: FC<ButtonGroupProps> = memo(
 
     return (
       <HStack gap="sm">
-        {!isCodePreviewOpen || isMobile ? (
+        {!isThemePreviewOpen || isMobile ? (
           <IconButton
             aria-label="Open source code"
             variant="ghost"
@@ -109,7 +117,7 @@ const ButtonGroup: FC<ButtonGroupProps> = memo(
             }}
             icon={isVertical ? <LayoutVertical /> : <LayoutHorizontal />}
             onClick={handlerAll(
-              onCodePreviewOpen,
+              onThemePreviewOpen,
               isMobile ? onClose : undefined,
             )}
           />

@@ -15,25 +15,25 @@ import { memo, useEffect, useMemo, useRef } from "react"
 import { ComponentThemePreview } from "components/data-display"
 import { ComponentPreview } from "components/data-display/component-preview"
 import { CONSTANT } from "constant"
+import type { ThemeDirection } from "layouts/component-layout"
 
-export type CodeDirection = ResizableProps["direction"]
 export const MOBILE_BREAKPOINTS = ["md", "sm"]
 
 export type ComponentBodyProps = ResizableProps & {
-  codeDirection: CodeDirection
-  onCodeDirectionChange: (valueOrFunc: SetStateAction<CodeDirection>) => void
-  isCodePreviewOpen: boolean
-  onCodePreviewClose: () => void
+  themeDirection: ThemeDirection
+  onThemeDirectionChange: (valueOrFunc: SetStateAction<ThemeDirection>) => void
+  isThemePreviewOpen: boolean
+  onThemePreviewClose: () => void
 }
 
 export const ComponentBody = memo(
   forwardRef<ComponentBodyProps, "div">(
     (
       {
-        codeDirection,
-        onCodeDirectionChange,
-        isCodePreviewOpen,
-        onCodePreviewClose,
+        themeDirection,
+        onThemeDirectionChange,
+        isThemePreviewOpen,
+        onThemePreviewClose,
         ...rest
       },
       ref,
@@ -64,12 +64,12 @@ export const ComponentBody = memo(
       }, [breakpoint])
 
       const isMobile = MOBILE_BREAKPOINTS.includes(breakpoint)
-      const isVertical = codeDirection === "vertical"
+      const isVertical = themeDirection === "vertical"
 
       return (
         <Resizable
           ref={ref}
-          direction={codeDirection}
+          direction={themeDirection}
           flex="1"
           storageKey={CONSTANT.STORAGE.COMPONENT_LAYOUT}
           storage={storage}
@@ -78,14 +78,14 @@ export const ComponentBody = memo(
           <ResizableItem
             id="preview"
             order={1}
-            defaultSize={isCodePreviewOpen ? (isMobile ? 0 : 70) : 100}
+            defaultSize={isThemePreviewOpen ? (isMobile ? 0 : 70) : 100}
             overflow="auto"
             h="full"
           >
             <ComponentPreview />
           </ResizableItem>
 
-          {isCodePreviewOpen ? (
+          {isThemePreviewOpen ? (
             <>
               <ResizableTrigger
                 _active={!isMobile ? { bg: "focus" } : undefined}
@@ -105,9 +105,9 @@ export const ComponentBody = memo(
                 overflow="auto"
               >
                 <ComponentThemePreview
-                  codeDirection={codeDirection}
-                  onCodeDirectionChange={onCodeDirectionChange}
-                  onCodePreviewClose={onCodePreviewClose}
+                  themeDirection={themeDirection}
+                  onThemeDirectionChange={onThemeDirectionChange}
+                  onThemePreviewClose={onThemePreviewClose}
                   borderTopWidth={isVertical ? "0px" : "1px"}
                 />
               </ResizableItem>

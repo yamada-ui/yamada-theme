@@ -16,7 +16,7 @@ import { getCookie, setCookie } from "utils/storage"
 
 export const MOBILE_BREAKPOINTS = ["md", "sm"]
 export const DEFAULT_DIRECTION = "vertical"
-export type CodeDirection = ResizableProps["direction"]
+export type ThemeDirection = ResizableProps["direction"]
 
 type ComponentLayoutOptions = {}
 
@@ -34,29 +34,30 @@ type ComponentLayoutBodyProps = StackProps
 
 const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
   const { screen } = useLoading()
-  const codeControls = useDisclosure()
-  const [codeDirection, setCodeDirection] = useState<CodeDirection>("vertical")
+  const themeControls = useDisclosure()
+  const [themeDirection, setThemeDirection] =
+    useState<ThemeDirection>("vertical")
   const [, isMounted] = useIsMounted({ rerender: true })
   const breakpoint = useBreakpoint()
-  const isCodePreviewOpen = codeControls.isOpen
+  const isThemePreviewOpen = themeControls.isOpen
 
-  const onCodePreviewOpen = useCallback(() => {
-    codeControls.onOpen()
-    setCookie(CONSTANT.STORAGE.COMPONENT_CODE_PREVIEW_IS_OPEN, "true")
-  }, [codeControls])
+  const onThemePreviewOpen = useCallback(() => {
+    themeControls.onOpen()
+    setCookie(CONSTANT.STORAGE.COMPONENT_THEME_PREVIEW_IS_OPEN, "true")
+  }, [themeControls])
 
-  const onCodePreviewClose = useCallback(() => {
-    codeControls.onClose()
-    setCookie(CONSTANT.STORAGE.COMPONENT_CODE_PREVIEW_IS_OPEN, "false")
-  }, [codeControls])
+  const onThemePreviewClose = useCallback(() => {
+    themeControls.onClose()
+    setCookie(CONSTANT.STORAGE.COMPONENT_THEME_PREVIEW_IS_OPEN, "false")
+  }, [themeControls])
 
-  const onCodeDirectionChange = useCallback(
-    (valueOrFunc: SetStateAction<CodeDirection>) =>
-      setCodeDirection((prev) => {
+  const onThemeDirectionChange = useCallback(
+    (valueOrFunc: SetStateAction<ThemeDirection>) =>
+      setThemeDirection((prev) => {
         const next = runIfFunc(valueOrFunc, prev)
 
         setCookie(
-          CONSTANT.STORAGE.COMPONENT_CODE_PREVIEW_DIRECTION,
+          CONSTANT.STORAGE.COMPONENT_THEME_PREVIEW_DIRECTION,
           next ?? DEFAULT_DIRECTION,
         )
 
@@ -68,8 +69,8 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
   useEffect(() => {
     if (!MOBILE_BREAKPOINTS.includes(breakpoint)) return
 
-    onCodeDirectionChange("vertical")
-  }, [breakpoint, onCodeDirectionChange])
+    onThemeDirectionChange("vertical")
+  }, [breakpoint, onThemeDirectionChange])
 
   useUpdateEffect(() => {
     if (!isMounted) return
@@ -77,20 +78,20 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
     const isOpen =
       getCookie<string>(
         document.cookie,
-        CONSTANT.STORAGE.COMPONENT_CODE_PREVIEW_IS_OPEN,
+        CONSTANT.STORAGE.COMPONENT_THEME_PREVIEW_IS_OPEN,
         "false",
       ) === "true"
 
-    if (isOpen) codeControls.onOpen()
+    if (isOpen) themeControls.onOpen()
 
     if (!MOBILE_BREAKPOINTS.includes(breakpoint)) {
-      const codeDirection = getCookie<CodeDirection>(
+      const codeDirection = getCookie<ThemeDirection>(
         document.cookie,
-        CONSTANT.STORAGE.COMPONENT_CODE_PREVIEW_DIRECTION,
+        CONSTANT.STORAGE.COMPONENT_THEME_PREVIEW_DIRECTION,
         "vertical",
       )
 
-      setCodeDirection(codeDirection)
+      setThemeDirection(codeDirection)
     }
 
     screen.finish()
@@ -99,15 +100,19 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
   return (
     <VStack display={isMounted ? "flex" : "none"} h="100dvh" gap="0" {...rest}>
       <ComponentHeader
-        {...{ codeDirection, isCodePreviewOpen, onCodePreviewOpen }}
+        {...{
+          themeDirection: themeDirection,
+          isThemePreviewOpen: isThemePreviewOpen,
+          onThemePreviewOpen: onThemePreviewOpen,
+        }}
       />
 
       <ComponentBody
         {...{
-          codeDirection,
-          onCodeDirectionChange,
-          isCodePreviewOpen,
-          onCodePreviewClose,
+          themeDirection: themeDirection,
+          onThemeDirectionChange: onThemeDirectionChange,
+          isThemePreviewOpen: isThemePreviewOpen,
+          onThemePreviewClose: onThemePreviewClose,
         }}
       />
     </VStack>

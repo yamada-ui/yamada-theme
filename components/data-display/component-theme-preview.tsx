@@ -1,32 +1,38 @@
 import { X } from "@yamada-ui/lucide"
 import {
+  ColorPicker,
+  Divider,
   forwardRef,
   handlerAll,
   HStack,
   IconButton,
+  Input,
+  Spacer,
   TabList,
+  TabPanel,
   Tabs,
+  Text,
+  VStack,
 } from "@yamada-ui/react"
-import type { ResizableProps, TabsProps } from "@yamada-ui/react"
+import type { TabsProps } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
 import { memo } from "react"
 import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
-
-export type CodeDirection = ResizableProps["direction"]
+import type { ThemeDirection } from "layouts/component-layout"
 
 export type ComponentThemePreviewProps = TabsProps & {
-  codeDirection?: CodeDirection
-  onCodeDirectionChange?: (valueOrFunc: SetStateAction<CodeDirection>) => void
-  onCodePreviewClose?: () => void
+  themeDirection?: ThemeDirection
+  onThemeDirectionChange?: (valueOrFunc: SetStateAction<ThemeDirection>) => void
+  onThemePreviewClose?: () => void
 }
 
 export const ComponentThemePreview = memo(
   forwardRef<ComponentThemePreviewProps, "div">(
     (
-      { codeDirection, onCodeDirectionChange, onCodePreviewClose, ...rest },
+      { themeDirection, onThemeDirectionChange, onThemePreviewClose, ...rest },
       ref,
     ) => {
-      const isVertical = codeDirection === "vertical"
+      const isVertical = themeDirection === "vertical"
 
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>
@@ -44,8 +50,7 @@ export const ComponentThemePreview = memo(
             </HStack>
 
             <HStack ms="md" me="sm" gap="0">
-              CopyButton
-              {codeDirection ? (
+              {themeDirection ? (
                 <IconButton
                   aria-label="Change code preview direction"
                   size="sm"
@@ -60,13 +65,13 @@ export const ComponentThemePreview = memo(
                     )
                   }
                   onClick={() =>
-                    onCodeDirectionChange?.((prev) =>
+                    onThemeDirectionChange?.((prev) =>
                       prev === "vertical" ? "horizontal" : "vertical",
                     )
                   }
                 />
               ) : null}
-              {onCodePreviewClose ? (
+              {onThemePreviewClose ? (
                 <IconButton
                   aria-label="Close code preview"
                   size="sm"
@@ -74,12 +79,30 @@ export const ComponentThemePreview = memo(
                   color="muted"
                   fontSize="lg"
                   icon={<X />}
-                  onClick={onCodePreviewClose}
+                  onClick={onThemePreviewClose}
                 />
               ) : null}
             </HStack>
           </TabList>
-          code
+
+          <TabPanel>
+            <VStack divider={<Divider size="full" />}>
+              <HStack>
+                <Text>title</Text>
+
+                <Spacer />
+
+                <Input />
+              </HStack>
+              <HStack>
+                <Text>color</Text>
+
+                <Spacer />
+
+                <ColorPicker />
+              </HStack>
+            </VStack>
+          </TabPanel>
         </Tabs>
       )
     },
