@@ -13,6 +13,7 @@ import type {
 import type { SetStateAction } from "react"
 import { memo, useEffect, useMemo, useRef } from "react"
 import { ComponentThemePreview } from "components/data-display"
+import { ComponentPreview } from "components/data-display/component-preview"
 import { CONSTANT } from "constant"
 
 export type CodeDirection = ResizableProps["direction"]
@@ -81,7 +82,7 @@ export const ComponentBody = memo(
             overflow="auto"
             h="full"
           >
-            component preview
+            <ComponentPreview />
           </ResizableItem>
 
           {isCodePreviewOpen ? (
