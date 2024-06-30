@@ -27,12 +27,7 @@ import {
 import Link from "next/link"
 import type { FC } from "react"
 import { memo, useRef, useState } from "react"
-import {
-  ColorModeButton,
-  Search,
-  SearchButton,
-  ThemeSchemeButton,
-} from "components/forms"
+import { ColorModeButton, ThemeSchemeButton } from "components/forms"
 import { Discord, Github } from "components/media-and-icons"
 import { NextLinkIconButton, Tree } from "components/navigation"
 import { MobileMenu } from "components/overlay"
@@ -92,19 +87,6 @@ export const Header = memo(
               </Heading>
             </Box>
 
-            <Search
-              display={{ base: "flex", md: "none" }}
-              borderColor={isScroll ? "transparent" : "border"}
-              bg={
-                isScroll
-                  ? ["whiteAlpha.600", "blackAlpha.500"]
-                  : ["white", "black"]
-              }
-              backdropFilter="auto"
-              backdropSaturate="180%"
-              backdropBlur="10px"
-            />
-
             <ButtonGroup {...{ isOpen, onOpen }} />
           </HStack>
         </Center>
@@ -127,14 +109,6 @@ const ButtonGroup: FC<ButtonGroupProps> = memo(
   ({ isMobile, isOpen, onOpen, onClose }) => {
     return (
       <HStack gap="sm">
-        <SearchButton
-          display={{
-            base: "none",
-            md: !isMobile ? "inline-flex" : undefined,
-            sm: "none",
-          }}
-        />
-
         <NextLinkIconButton
           href={CONSTANT.SNS.DISCORD}
           isExternal

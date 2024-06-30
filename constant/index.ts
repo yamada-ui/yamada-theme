@@ -3,5 +3,6 @@ import { LABEL } from "./label"
 import { MENU } from "./menu"
 import { SEO } from "./seo"
 import { SNS } from "./sns"
+import { STORAGE } from "./storage"
 
-export const CONSTANT = { SNS, SEO, I18N, MENU, LABEL }
+export const CONSTANT = { SNS, SEO, I18N, MENU, LABEL, STORAGE }

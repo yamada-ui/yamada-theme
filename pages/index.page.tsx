@@ -2,6 +2,7 @@ import type { NextPage } from "next"
 import type { AppProps } from "next/app"
 import { useI18n } from "contexts/i18n-context"
 import { AppLayout } from "layouts/app-layout"
+import { ComponentLayout } from "layouts/component-layout"
 
 const Page: NextPage<AppProps> = () => {
   const { t } = useI18n()
@@ -11,7 +12,9 @@ const Page: NextPage<AppProps> = () => {
       title={t("app.title")}
       description={t("app.description")}
       gap="lg"
-    ></AppLayout>
+    >
+      <ComponentLayout />
+    </AppLayout>
   )
 }
 
