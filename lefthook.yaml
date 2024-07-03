@@ -1,0 +1,15 @@
+pre-commit:
+  piped: true
+  commands:
+    1_format:
+      glob: "*.{js,jsx,ts,tsx,mjs,mts,yaml,json,html,css}"
+      run: pnpm prettier {staged_files} --write
+
+    2_lint:
+      glob: "*.{js,jsx,ts,tsx,mjs,mts}"
+      run: pnpm eslint {staged_files} --max-warnings=0
+
+commit-msg:
+  commands:
+    "lint commit message":
+      run: pnpm commitlint --edit ${1} --config .commitlintrc
