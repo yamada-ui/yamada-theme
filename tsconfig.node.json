@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "include": [
+    "vitest.config.mts"
+  ],
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "noEmit": true,
+    "incremental": true,
+    "moduleResolution": "bundler"
+  }
+}
