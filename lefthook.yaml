@@ -3,7 +3,11 @@ pre-commit:
   commands:
     1_format:
       glob: "*.{js,jsx,ts,tsx,mjs,mts,yaml,json,html,css}"
-      run: pnpm prettier {staged_files} --write
+      run: |
+        pnpm prettier {staged_files} --write \
+        | grep -v "(unchanged)" \
+        | awk '{print $1}' \
+        | xargs git add
 
     2_lint:
       glob: "*.{js,jsx,ts,tsx,mjs,mts}"
