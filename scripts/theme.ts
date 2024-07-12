@@ -1,5 +1,7 @@
+import { readFile } from "fs/promises"
 import path from "path"
 import * as p from "@clack/prompts"
+import { toCamelCase } from "@yamada-ui/react"
 import c from "chalk"
 import { glob } from "glob"
 
@@ -15,7 +17,7 @@ export const themePath = [
   "*.js",
 ]
 
-const resolveThemePaths = async (): Promise<string[] | undefined> => {
+const resolveThemePaths = async (): Promise<string[]> => {
   const paths = [path.join(...themePath), path.posix.join(...themePath)]
 
   const triedPaths = await Promise.all(
@@ -30,10 +32,66 @@ const resolveThemePaths = async (): Promise<string[] | undefined> => {
 
   const resolvedPaths = triedPaths.find(Boolean)
 
-  if (!resolvedPaths) return
+  if (!resolvedPaths) {
+    throw new Error("Could not find @yamada-ui/theme in node_modules.")
+  }
 
   return resolvedPaths
 }
+
+const convertPaths = (paths: string[]): { path: string; name: string }[] => {
+  return paths.map((value) => {
+    const resolvedPath = path.resolve(process.cwd(), value)
+    const match = value.match(/[^/\\]+(?=\.js$)/)
+    const name = toCamelCase(match?.[0] ?? "")
+
+    return { path: resolvedPath, name }
+  })
+}
+
+const extractObjectData = (content: string, name: string): string => {
+  const objectPattern = new RegExp(`${name}\\s*=\\s*({[\\s\\S]*?})`, "m")
+  const match = content.match(objectPattern)
+
+  if (match && match[1]) {
+    let result = match[1]
+    let level = 0
+    let startIndex = content.indexOf(result)
+    for (let i = startIndex; i < content.length; i++) {
+      if (content[i] === "{") {
+        level++
+      }
+      if (content[i] === "}") {
+        level--
+        if (level === 0) {
+          return content.substring(startIndex, i + 1)
+        }
+      }
+    }
+  }
+  return ""
+}
+
+// const extractComponentsName = (content: string): string[] => {
+//   return []
+// }
+
+//TODO:consider extends theme
+const extractStyledComopnent = async (
+  props: { path: string; name: string }[],
+): Promise<{ name: string; theme: string }[]> => {
+  return await Promise.all(
+    props.map(async ({ path, name }) => {
+      const content = await readFile(path, "utf8")
+      const extractedThemeData = extractObjectData(content, name)
+      // const componentsName = extractComponentsName(extractedThemeData)
+
+      return { name, theme: extractedThemeData }
+    }),
+  )
+}
+
+const generateThemeStructure = () => { }
 
 const main = async () => {
   p.intro(c.magenta(`Generating Yamada UI theme structure`))
@@ -44,10 +102,15 @@ const main = async () => {
     const start = process.hrtime.bigint()
 
     //TODO: get theme structure from theme file
-    const paths = await resolveThemePaths()
-    console.log(paths)
-    //TODO: get component list and create theme structure file
     // if dont have structure file, the component is single comopnent.
+    const paths = await resolveThemePaths()
+    const converted = convertPaths(paths)
+
+    //TODO: next:extract label data
+    const themeData = await extractStyledComopnent(converted)
+    console.log(themeData)
+
+    generateThemeStructure()
 
     const end = process.hrtime.bigint()
     const duration = (Number(end - start) / 1e9).toFixed(2)
