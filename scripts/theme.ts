@@ -52,11 +52,13 @@ const convertPaths = (paths: string[]): { path: string; name: string }[] => {
 const extractObjectData = (content: string, name: string): string => {
   const objectPattern = new RegExp(`${name}\\s*=\\s*({[\\s\\S]*?})`, "m")
   const match = content.match(objectPattern)
+  console.log({ name, match: match?.[1] })
 
   if (match && match[1]) {
-    let result = match[1]
+    const result = match[1]
+    const startIndex = content.indexOf(result)
     let level = 0
-    let startIndex = content.indexOf(result)
+
     for (let i = startIndex; i < content.length; i++) {
       if (content[i] === "{") {
         level++
@@ -69,24 +71,41 @@ const extractObjectData = (content: string, name: string): string => {
       }
     }
   }
-  return ""
+
+  return "{}"
 }
 
-// const extractComponentsName = (content: string): string[] => {
-//   return []
-// }
+const convertStringToObject = (content: string): any =>
+  new Function(`return ${content}`)()
+
+const extractBaseStyleKeys = (content: string): string[] => {
+  const convertedObject = convertStringToObject(content)
+
+  if (convertedObject.hasOwnProperty("baseStyle")) {
+    return Object.keys(convertedObject.baseStyle)
+  }
+
+  return []
+}
 
 //TODO:consider extends theme
+type ThemeComponents = {
+  name: string
+  keys: string[]
+  omit: string[]
+  extend: string
+}
+
 const extractStyledComopnent = async (
   props: { path: string; name: string }[],
-): Promise<{ name: string; theme: string }[]> => {
+): Promise<ThemeComponents[]> => {
   return await Promise.all(
     props.map(async ({ path, name }) => {
       const content = await readFile(path, "utf8")
       const extractedThemeData = extractObjectData(content, name)
-      // const componentsName = extractComponentsName(extractedThemeData)
+      const keys = extractBaseStyleKeys(extractedThemeData)
 
-      return { name, theme: extractedThemeData }
+      return { name, keys, omit: [], extend: "" }
     }),
   )
 }
@@ -106,9 +125,11 @@ const main = async () => {
     const paths = await resolveThemePaths()
     const converted = convertPaths(paths)
 
-    //TODO: next:extract label data
     const themeData = await extractStyledComopnent(converted)
-    console.log(themeData)
+    //NOTE: multiかどうか判別する必要がある
+    //継承しているコンポーネントのスタイル取れてなさそう
+    //継承しているやつはomitした奴と上書きされたやつの処理も必要
+    // console.log(themeData)
 
     generateThemeStructure()
 
