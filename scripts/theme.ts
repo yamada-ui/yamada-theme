@@ -106,6 +106,18 @@ const extractInheritedComponent = (content: string, name: string): string => {
   return ""
 }
 
+const extractOmitKeys = (content: string): string[] => {
+  const omitPattern = new RegExp("{\\s*omit:\\s*(\\[[\\s\\S]*?\\])\\s*}")
+
+  const match = content.match(omitPattern)
+
+  if (match && match[1]) {
+    return convertStringToObject(match[1])
+  }
+
+  return []
+}
+
 const convertStringToObject = (content: string): any =>
   new Function(`return ${content}`)()
 
@@ -136,9 +148,10 @@ const extractStyledComopnent = async (
       const extractedThemeData = extractThemeData(content, name)
       const keys = extractBaseStyleKeys(extractedThemeData)
       const inheritedComponent = extractInheritedComponent(content, name)
-      console.log({ name, keys, extend: inheritedComponent })
+      const omitKeys = extractOmitKeys(content)
+      console.log({ name, keys, omit: omitKeys, extend: inheritedComponent })
 
-      return { name, keys, omit: [], extend: inheritedComponent }
+      return { name, keys, omit: omitKeys, extend: inheritedComponent }
     }),
   )
 }
