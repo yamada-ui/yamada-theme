@@ -49,30 +49,61 @@ const convertPaths = (paths: string[]): { path: string; name: string }[] => {
   })
 }
 
-const extractObjectData = (content: string, name: string): string => {
-  const objectPattern = new RegExp(`${name}\\s*=\\s*({[\\s\\S]*?})`, "m")
-  const match = content.match(objectPattern)
-  console.log({ name, match: match?.[1] })
+const extractObjectData = (content: string, startIndex: number): string => {
+  let level = 0
 
-  if (match && match[1]) {
-    const result = match[1]
-    const startIndex = content.indexOf(result)
-    let level = 0
-
-    for (let i = startIndex; i < content.length; i++) {
-      if (content[i] === "{") {
-        level++
-      }
-      if (content[i] === "}") {
-        level--
-        if (level === 0) {
-          return content.substring(startIndex, i + 1)
-        }
+  for (let i = startIndex; i < content.length; i++) {
+    if (content[i] === "{") {
+      level++
+    }
+    if (content[i] === "}") {
+      level--
+      if (level === 0) {
+        return content.substring(startIndex, i + 1)
       }
     }
   }
 
+  throw new Error("Clould not find the terminating '}' in the object")
+}
+
+const extractThemeData = (content: string, name: string): string => {
+  const objectPattern = new RegExp(`${name}\\s*=\\s*({[\\s\\S]*?})`, "m")
+  const inheritesObjectPattern = new RegExp(
+    `${name}\\s*=\\s*\\([\\s\\S]*?\\)\\(\\w+,\\s*({[\\s\\S]*?})\\)`,
+    "m",
+  )
+
+  const match = content.match(objectPattern)
+
+  if (match && match[1]) {
+    const startIndex = content.indexOf(match[1])
+
+    return extractObjectData(content, startIndex)
+  } else {
+    const match = content.match(inheritesObjectPattern)
+
+    if (match && match[1]) {
+      const startIndex = content.indexOf(match[1])
+
+      return extractObjectData(content, startIndex)
+    }
+  }
+
   return "{}"
+}
+
+const extractInheritedComponent = (content: string, name: string): string => {
+  const inheritesObjectPattern = new RegExp(
+    `${name}\\s*=\\s*\\([\\s\\S]*?\\)\\((\\w+)[\\s\\S]*?\\)`,
+    "m",
+  )
+
+  const match = content.match(inheritesObjectPattern)
+
+  if (match && match[1]) return match[1]
+
+  return ""
 }
 
 const convertStringToObject = (content: string): any =>
@@ -102,10 +133,12 @@ const extractStyledComopnent = async (
   return await Promise.all(
     props.map(async ({ path, name }) => {
       const content = await readFile(path, "utf8")
-      const extractedThemeData = extractObjectData(content, name)
+      const extractedThemeData = extractThemeData(content, name)
       const keys = extractBaseStyleKeys(extractedThemeData)
+      const inheritedComponent = extractInheritedComponent(content, name)
+      console.log({ name, keys, extend: inheritedComponent })
 
-      return { name, keys, omit: [], extend: "" }
+      return { name, keys, omit: [], extend: inheritedComponent }
     }),
   )
 }
