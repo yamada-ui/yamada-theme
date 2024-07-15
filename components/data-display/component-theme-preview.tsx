@@ -1,12 +1,14 @@
 import { X } from "@yamada-ui/lucide"
 import {
-  ColorPicker,
-  Divider,
+  Accordion,
+  AccordionItem,
+  AccordionLabel,
+  AccordionPanel,
+  defaultTheme,
   forwardRef,
   handlerAll,
   HStack,
   IconButton,
-  Input,
   Spacer,
   TabList,
   TabPanel,
@@ -14,7 +16,7 @@ import {
   Text,
   VStack,
 } from "@yamada-ui/react"
-import type { TabsProps } from "@yamada-ui/react"
+import type { ComponentStyle, TabsProps, UIStyle } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
 import { memo } from "react"
 import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
@@ -33,6 +35,43 @@ export const ComponentThemePreview = memo(
       ref,
     ) => {
       const isVertical = themeDirection === "vertical"
+      //NOTE: multiかどうかはtypeを見ればよさそう
+      const theme = defaultTheme.components.Button
+
+      const temp = Object.keys(theme).map((key) => {
+        const styles = theme[key as keyof ComponentStyle]
+        console.log(styles)
+
+        return (
+          <AccordionItem key={key}>
+            <AccordionLabel>{key}</AccordionLabel>
+            <AccordionPanel>
+              <VStack>
+                {styles !== undefined &&
+                  Object.entries(styles).map(([key, value]) => {
+                    return (
+                      <HStack key={key}>
+                        <Text>{key}</Text>
+
+                        <Spacer />
+
+                        <Text>{value.toString()}</Text>
+                      </HStack>
+                    )
+                  })}
+              </VStack>
+            </AccordionPanel>
+          </AccordionItem>
+        )
+      })
+
+      for (const prop in theme) {
+        for (const styles in theme[prop as keyof ComponentStyle]) {
+          console.log(
+            theme[prop as keyof ComponentStyle]?.[styles as keyof UIStyle],
+          )
+        }
+      }
 
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>
@@ -86,22 +125,23 @@ export const ComponentThemePreview = memo(
           </TabList>
 
           <TabPanel>
-            <VStack divider={<Divider size="full" />}>
-              <HStack>
-                <Text>title</Text>
-
-                <Spacer />
-
-                <Input />
-              </HStack>
-              <HStack>
-                <Text>color</Text>
-
-                <Spacer />
-
-                <ColorPicker />
-              </HStack>
-            </VStack>
+            {/* <VStack divider={<Divider size="full" />}> */}
+            {/*   <HStack> */}
+            {/*     <Text>title</Text> */}
+            {/**/}
+            {/*     <Spacer /> */}
+            {/**/}
+            {/*     <Input /> */}
+            {/*   </HStack> */}
+            {/*   <HStack> */}
+            {/*     <Text>color</Text> */}
+            {/**/}
+            {/*     <Spacer /> */}
+            {/**/}
+            {/*     <ColorPicker /> */}
+            {/*   </HStack> */}
+            {/* </VStack> */}
+            <Accordion>{temp}</Accordion>
           </TabPanel>
         </Tabs>
       )
