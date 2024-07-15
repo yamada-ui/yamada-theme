@@ -4,6 +4,7 @@ import * as p from "@clack/prompts"
 import { toCamelCase } from "@yamada-ui/react"
 import c from "chalk"
 import { glob } from "glob"
+import { convertStringToObject } from "./utils"
 
 export const themePath = [
   "node_modules",
@@ -93,6 +94,17 @@ const extractThemeData = (content: string, name: string): string => {
   return "{}"
 }
 
+const extractBaseStyleKeys = (content: string, name: string): string[] => {
+  const themeData = extractThemeData(content, name)
+  const convertedObject = convertStringToObject(themeData)
+
+  if (convertedObject.hasOwnProperty("baseStyle")) {
+    return Object.keys(convertedObject.baseStyle)
+  }
+
+  return []
+}
+
 const extractInheritedComponent = (content: string, name: string): string => {
   const inheritesObjectPattern = new RegExp(
     `${name}\\s*=\\s*\\([\\s\\S]*?\\)\\((\\w+)[\\s\\S]*?\\)`,
@@ -118,20 +130,6 @@ const extractOmitKeys = (content: string): string[] => {
   return []
 }
 
-const convertStringToObject = (content: string): any =>
-  new Function(`return ${content}`)()
-
-const extractBaseStyleKeys = (content: string): string[] => {
-  const convertedObject = convertStringToObject(content)
-
-  if (convertedObject.hasOwnProperty("baseStyle")) {
-    return Object.keys(convertedObject.baseStyle)
-  }
-
-  return []
-}
-
-//TODO:consider extends theme
 type ThemeComponents = {
   name: string
   keys: string[]
@@ -145,13 +143,16 @@ const extractStyledComopnent = async (
   return await Promise.all(
     props.map(async ({ path, name }) => {
       const content = await readFile(path, "utf8")
-      const extractedThemeData = extractThemeData(content, name)
-      const keys = extractBaseStyleKeys(extractedThemeData)
+      const keys = extractBaseStyleKeys(content, name)
       const inheritedComponent = extractInheritedComponent(content, name)
       const omitKeys = extractOmitKeys(content)
-      console.log({ name, keys, omit: omitKeys, extend: inheritedComponent })
 
-      return { name, keys, omit: omitKeys, extend: inheritedComponent }
+      return {
+        name,
+        keys,
+        omit: omitKeys,
+        extend: inheritedComponent,
+      } as ThemeComponents
     }),
   )
 }
@@ -166,16 +167,21 @@ const main = async () => {
   try {
     const start = process.hrtime.bigint()
 
-    //TODO: get theme structure from theme file
-    // if dont have structure file, the component is single comopnent.
+    s.start(`Resolving the theme path`)
+
     const paths = await resolveThemePaths()
     const converted = convertPaths(paths)
 
+    s.stop(`Resolved the theme path`)
+
+    s.start(`Extracting theme structure`)
+
     const themeData = await extractStyledComopnent(converted)
     //NOTE: multiかどうか判別する必要がある
-    //継承しているコンポーネントのスタイル取れてなさそう
-    //継承しているやつはomitした奴と上書きされたやつの処理も必要
-    // console.log(themeData)
+    //継承しているやつはomitした奴と上書きされたやつの処理も必要？どこでやるかは検討が必要
+    console.log(themeData)
+
+    s.stop(`Extracted theme structure`)
 
     generateThemeStructure()
 
