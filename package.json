@@ -19,8 +19,7 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:ci": "vitest --coverage",
-    "test:ui": "vitest --ui --watch --coverage",
-    "gen:theme": "tsx scripts/theme"
+    "test:ui": "vitest --ui --watch --coverage"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
