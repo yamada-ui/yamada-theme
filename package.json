@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "spellcheck": "cspell \"**/*.{js,jsx,mjs,ts,tsx,mts,md,mdx}\" --quiet",
     "format": "prettier --write .",
     "format:check": "prettier --check --cache .",
     "format:write": "prettier --write --cache .",
