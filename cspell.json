@@ -1,1 +1,17 @@
-{"flagWords":[],"words":["typecheck","fontawesome","lefthook","HTMLUI","HIROTOMO","guldo","yamcha","kurillin"],"language":"en","version":"0.2"}
+{
+  "words": [
+    "typecheck",
+    "fontawesome",
+    "lefthook",
+    "HTMLUI",
+    "HIROTOMO",
+    "guldo",
+    "yamcha",
+    "kurillin",
+    "nvmrc",
+    "hirotomoyamada"
+  ],
+  "flagWords": [],
+  "language": "en",
+  "version": "0.2"
+}
