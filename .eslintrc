@@ -9,12 +9,14 @@
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:testing-library/react",
+    "plugin:vitest/legacy-recommended",
     "prettier"
   ],
   "plugins": [
     "@typescript-eslint/eslint-plugin",
     "unused-imports",
-    "import"
+    "import",
+    "vitest"
   ],
   "rules": {
     "import/order": [
