@@ -9,7 +9,9 @@ pre-commit:
 
     2_lint:
       glob: "*.{js,jsx,ts,tsx,mjs,mts}"
-      run: pnpm eslint {staged_files} --max-warnings=0
+      run: |
+        pnpm eslint {staged_files} --max-warnings=0 --fix
+      stage_fixed: true
 
 commit-msg:
   commands:
