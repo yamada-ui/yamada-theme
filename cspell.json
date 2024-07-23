@@ -1,1 +1,17 @@
-{"flagWords":[],"words":["typecheck","fontawesome","lefthook","HTMLUI","HIROTOMO","guldo","yamcha","kurillin"],"language":"en","version":"0.2"}
+{
+    "flagWords": [],
+    "words": [
+        "commitlint",
+        "fontawesome",
+        "guldo",
+        "HIROTOMO",
+        "HTMLUI",
+        "kurillin",
+        "lefthook",
+        "lucide",
+        "typecheck",
+        "yamcha"
+    ],
+    "language": "en",
+    "version": "0.2"
+}
