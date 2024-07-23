@@ -5,10 +5,14 @@ import {
   AccordionLabel,
   AccordionPanel,
   defaultTheme,
+  Editable,
+  EditableInput,
+  EditablePreview,
   forwardRef,
   handlerAll,
   HStack,
   IconButton,
+  merge,
   Spacer,
   TabList,
   TabPanel,
@@ -16,9 +20,13 @@ import {
   Text,
   VStack,
 } from "@yamada-ui/react"
-import type { ComponentStyle, TabsProps, UIStyle } from "@yamada-ui/react"
+import type {
+  ComponentMultiStyle,
+  ComponentStyle,
+  TabsProps,
+} from "@yamada-ui/react"
 import type { SetStateAction } from "react"
-import { memo } from "react"
+import { memo, useState } from "react"
 import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
 import type { ThemeDirection } from "layouts/component-layout"
 
@@ -26,21 +34,28 @@ export type ComponentThemePreviewProps = TabsProps & {
   themeDirection?: ThemeDirection
   onThemeDirectionChange?: (valueOrFunc: SetStateAction<ThemeDirection>) => void
   onThemePreviewClose?: () => void
+  onChangeTheme?: (theme: ComponentStyle | ComponentMultiStyle) => void
 }
 
 export const ComponentThemePreview = memo(
   forwardRef<ComponentThemePreviewProps, "div">(
     (
-      { themeDirection, onThemeDirectionChange, onThemePreviewClose, ...rest },
+      {
+        themeDirection,
+        onThemeDirectionChange,
+        onThemePreviewClose,
+        onChangeTheme,
+        ...rest
+      },
       ref,
     ) => {
       const isVertical = themeDirection === "vertical"
       //NOTE: multiかどうかはtypeを見ればよさそう
-      const theme = defaultTheme.components.Button
+      const [theme, setTheme] = useState(defaultTheme.components.Button)
 
       const temp = Object.keys(theme).map((key) => {
         const styles = theme[key as keyof ComponentStyle]
-        console.log(styles)
+        // console.log(styles)
 
         return (
           <AccordionItem key={key}>
@@ -48,14 +63,27 @@ export const ComponentThemePreview = memo(
             <AccordionPanel>
               <VStack>
                 {styles !== undefined &&
-                  Object.entries(styles).map(([key, value]) => {
+                  Object.entries(styles).map(([innerKey, value]) => {
                     return (
-                      <HStack key={key}>
-                        <Text>{key}</Text>
+                      <HStack key={innerKey}>
+                        <Text>{innerKey}</Text>
 
                         <Spacer />
 
-                        <Text>{value.toString()}</Text>
+                        <Editable
+                          defaultValue={value.toString()}
+                          onChange={(value) => {
+                            const newTheme = merge(theme, {
+                              [key]: { [innerKey]: value },
+                            })
+
+                            setTheme(newTheme)
+                            onChangeTheme?.(newTheme)
+                          }}
+                        >
+                          <EditablePreview />
+                          <EditableInput />
+                        </Editable>
                       </HStack>
                     )
                   })}
@@ -64,14 +92,6 @@ export const ComponentThemePreview = memo(
           </AccordionItem>
         )
       })
-
-      for (const prop in theme) {
-        for (const styles in theme[prop as keyof ComponentStyle]) {
-          console.log(
-            theme[prop as keyof ComponentStyle]?.[styles as keyof UIStyle],
-          )
-        }
-      }
 
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>

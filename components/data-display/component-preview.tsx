@@ -15,22 +15,23 @@ import {
   NoticeProvider,
   ResetStyle,
   ThemeProvider,
-  useAsync,
   createThemeSchemeManager,
   useColorMode,
   useTheme,
   ui,
+  assignRef,
+  merge,
 } from "@yamada-ui/react"
 import type {
   BoxProps,
-  Dict,
+  ComponentMultiStyle,
+  ComponentStyle,
   Environment,
   HTMLUIProps,
   LoadingProps,
-  ThemeConfig,
   UIProviderProps,
 } from "@yamada-ui/react"
-import type { FC } from "react"
+import type { FC, MutableRefObject } from "react"
 import { memo, useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import type { ComponentContainerProps } from "component"
@@ -60,6 +61,9 @@ export type ComponentPreviewProps = BoxProps & {
   containerProps?: ComponentContainerProps
   loadingProps?: LoadingProps
   iframe?: boolean
+  setThemeRef?: MutableRefObject<
+    (theme: ComponentStyle | ComponentMultiStyle) => void
+  >
 }
 
 const createCache = weakMemoize((container: Node) =>
@@ -69,7 +73,13 @@ const createCache = weakMemoize((container: Node) =>
 export const ComponentPreview = memo(
   forwardRef<ComponentPreviewProps, "div">(
     (
-      { containerProps: _containerProps, loadingProps, iframe, ...rest },
+      {
+        containerProps: _containerProps,
+        loadingProps,
+        iframe,
+        setThemeRef,
+        ...rest
+      },
       ref,
     ) => {
       // const Component = dynamic(() => import(`/contents/${paths.component}`))
@@ -106,21 +116,25 @@ export const ComponentPreview = memo(
         }
       }, [colorMode, themeScheme])
 
-      const { loading, value } = useAsync(async () => {
-        let theme: Dict | undefined
-        let config: ThemeConfig | undefined
+      const [componentTheme, setTheme] = useState<
+        ComponentStyle | ComponentMultiStyle
+      >(defaultTheme.components.Button)
 
-        // if (paths.theme) {
-        //   const module = await import(`/contents/${paths.theme}`)
-        //   theme = module.default ?? module.theme
-        // }
-        // if (paths.config) {
-        //   const module = await import(`/contents/${paths.config}`)
-        //   config = module.default ?? module.theme
-        // }
+      assignRef(setThemeRef, setTheme)
 
-        return { theme, config }
-      })
+      const { loading, value } = {
+        loading: false,
+        value: {
+          config: undefined,
+          // theme: { components: { Button: componentTheme } },
+          // theme: { ...defaultTheme },
+          theme: merge(defaultTheme, {
+            components: { Button: componentTheme },
+          }),
+        },
+      }
+
+      console.log(value.theme.components.Button)
 
       const containerProps = useMemo<HTMLUIProps<"div">>(() => {
         const { centerContent, ...rest } = _containerProps ?? {}
