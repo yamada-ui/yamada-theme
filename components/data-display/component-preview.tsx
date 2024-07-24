@@ -126,15 +126,12 @@ export const ComponentPreview = memo(
         loading: false,
         value: {
           config: undefined,
-          // theme: { components: { Button: componentTheme } },
-          // theme: { ...defaultTheme },
+          //TODO: refactor
           theme: merge(defaultTheme, {
             components: { Button: componentTheme },
           }),
         },
       }
-
-      console.log(value.theme.components.Button)
 
       const containerProps = useMemo<HTMLUIProps<"div">>(() => {
         const { centerContent, ...rest } = _containerProps ?? {}

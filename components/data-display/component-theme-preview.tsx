@@ -55,7 +55,6 @@ export const ComponentThemePreview = memo(
 
       const temp = Object.keys(theme).map((key) => {
         const styles = theme[key as keyof ComponentStyle]
-        // console.log(styles)
 
         return (
           <AccordionItem key={key}>
