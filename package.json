@@ -9,6 +9,7 @@
     "build:profile": "next build --profile",
     "start": "next start",
     "lint": "eslint . --max-warnings=0 --config eslint.config.mjs",
+    "lint:inspect": "pnpm dlx @eslint/config-inspector",
     "typecheck": "tsc --noEmit",
     "spellcheck": "cspell \"**/*.{js,jsx,mjs,ts,tsx,mts,md,mdx}\" --quiet",
     "format": "prettier --write .",
