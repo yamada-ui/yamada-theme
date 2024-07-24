@@ -18,6 +18,7 @@ import { memo, useCallback, useEffect, useMemo, useRef } from "react"
 import { ComponentThemePreview } from "components/data-display"
 import { ComponentPreview } from "components/data-display/component-preview"
 import { CONSTANT } from "constant"
+import { useComponent } from "contexts/component-context"
 import type { ThemeDirection } from "layouts/component-layout"
 
 export const MOBILE_BREAKPOINTS = ["md", "sm"]
@@ -42,6 +43,7 @@ export const ComponentBody = memo(
       ref,
     ) => {
       const controlRef = useRef<ResizableItemControl>(null)
+      const { paths } = useComponent()
       const breakpoint = useBreakpoint()
       const setThemeRef =
         useRef<(theme: ComponentStyle | ComponentMultiStyle) => void>(noop)
@@ -94,7 +96,7 @@ export const ComponentBody = memo(
             overflow="auto"
             h="full"
           >
-            <ComponentPreview setThemeRef={setThemeRef} />
+            <ComponentPreview paths={paths} setThemeRef={setThemeRef} />
           </ResizableItem>
 
           {isThemePreviewOpen ? (

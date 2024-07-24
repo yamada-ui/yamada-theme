@@ -3,7 +3,6 @@ import { CacheProvider } from "@emotion/react"
 import weakMemoize from "@emotion/weak-memoize"
 import {
   Box,
-  Button,
   Center,
   defaultConfig,
   defaultTheme,
@@ -31,10 +30,11 @@ import type {
   LoadingProps,
   UIProviderProps,
 } from "@yamada-ui/react"
+import dynamic from "next/dynamic"
 import type { FC, MutableRefObject } from "react"
 import { memo, useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import type { ComponentContainerProps } from "component"
+import type { Component, ComponentContainerProps } from "component"
 
 const UIProvider: FC<UIProviderProps & { environment?: Environment }> = ({
   theme = defaultTheme,
@@ -57,14 +57,15 @@ const UIProvider: FC<UIProviderProps & { environment?: Environment }> = ({
   )
 }
 
-export type ComponentPreviewProps = BoxProps & {
-  containerProps?: ComponentContainerProps
-  loadingProps?: LoadingProps
-  iframe?: boolean
-  setThemeRef?: MutableRefObject<
-    (theme: ComponentStyle | ComponentMultiStyle) => void
-  >
-}
+export type ComponentPreviewProps = BoxProps &
+  Pick<Component, "paths"> & {
+    containerProps?: ComponentContainerProps
+    loadingProps?: LoadingProps
+    iframe?: boolean
+    setThemeRef?: MutableRefObject<
+      (theme: ComponentStyle | ComponentMultiStyle) => void
+    >
+  }
 
 const createCache = weakMemoize((container: Node) =>
   createEmotionCache({ container, key: "iframe-css" }),
@@ -74,6 +75,7 @@ export const ComponentPreview = memo(
   forwardRef<ComponentPreviewProps, "div">(
     (
       {
+        paths,
         containerProps: _containerProps,
         loadingProps,
         iframe,
@@ -82,7 +84,9 @@ export const ComponentPreview = memo(
       },
       ref,
     ) => {
-      // const Component = dynamic(() => import(`/contents/${paths.component}`))
+      const Component = dynamic(() => import(`/contents/${paths.component}`))
+      console.log(Component)
+
       const { colorMode } = useColorMode()
       const { themeScheme } = useTheme()
       const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -185,10 +189,7 @@ export const ComponentPreview = memo(
                     >
                       {!loading ? (
                         <Box boxSize="full" flex="1" {...containerProps}>
-                          {/* <Component /> */}
-                          <Center>
-                            <Button>button</Button>
-                          </Center>
+                          <Component />
                         </Box>
                       ) : (
                         <Center boxSize="full" flex="1">
@@ -213,10 +214,7 @@ export const ComponentPreview = memo(
           >
             {!loading ? (
               <Box boxSize="full" flex="1" {...containerProps}>
-                {/* <Component /> */}
-                <Center>
-                  <Button>button</Button>
-                </Center>
+                <Component />
               </Box>
             ) : (
               <Center boxSize="full" flex="1">
