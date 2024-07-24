@@ -8,7 +8,7 @@
     "build": "next build",
     "build:profile": "next build --profile",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings=0 --config eslint.config.mjs",
     "typecheck": "tsc --noEmit",
     "spellcheck": "cspell \"**/*.{js,jsx,mjs,ts,tsx,mts,md,mdx}\" --quiet",
     "format": "prettier --write .",
