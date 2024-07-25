@@ -1,7 +1,7 @@
 import { existsSync } from "fs"
 import { readdir, readFile } from "fs/promises"
 import path from "node:path"
-import { toKebabCase } from "@yamada-ui/react"
+import { toCamelCase, toKebabCase } from "@yamada-ui/react"
 import type { GetStaticPathsResult } from "next"
 import type { Locale } from "./i18n"
 import type {
@@ -134,7 +134,7 @@ export const getComponent =
   ): Promise<Component | undefined> => {
     try {
       slug = slug.replace(/^\//, "")
-      const name = slug.split("/").at(-1)!
+      const name = toCamelCase(slug.split("/").at(-1)!)
       const dirPath = path.join("contents", slug)
       const componentPath = path.join(dirPath, "index.tsx")
       const themePath = path.join(dirPath, "theme.ts")

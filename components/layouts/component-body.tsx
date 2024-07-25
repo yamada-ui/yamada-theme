@@ -43,7 +43,7 @@ export const ComponentBody = memo(
       ref,
     ) => {
       const controlRef = useRef<ResizableItemControl>(null)
-      const { paths } = useComponent()
+      const { paths, name } = useComponent()
       const breakpoint = useBreakpoint()
       const setThemeRef =
         useRef<(theme: ComponentStyle | ComponentMultiStyle) => void>(noop)
@@ -97,6 +97,7 @@ export const ComponentBody = memo(
             h="full"
           >
             <ComponentPreview
+              name={name}
               paths={paths}
               setThemeRef={setThemeRef}
               borderTopWidth="1px"
@@ -125,6 +126,7 @@ export const ComponentBody = memo(
                 overflow="auto"
               >
                 <ComponentThemePreview
+                  name={name}
                   themeDirection={themeDirection}
                   onThemeDirectionChange={onThemeDirectionChange}
                   onThemePreviewClose={onThemePreviewClose}

@@ -27,20 +27,25 @@ import type {
 } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
 import { memo, useState } from "react"
+import type { Component } from "component"
 import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
 import type { ThemeDirection } from "layouts/component-layout"
 
-export type ComponentThemePreviewProps = TabsProps & {
-  themeDirection?: ThemeDirection
-  onThemeDirectionChange?: (valueOrFunc: SetStateAction<ThemeDirection>) => void
-  onThemePreviewClose?: () => void
-  onChangeTheme?: (theme: ComponentStyle | ComponentMultiStyle) => void
-}
+export type ComponentThemePreviewProps = TabsProps &
+  Pick<Component, "name"> & {
+    themeDirection?: ThemeDirection
+    onThemeDirectionChange?: (
+      valueOrFunc: SetStateAction<ThemeDirection>,
+    ) => void
+    onThemePreviewClose?: () => void
+    onChangeTheme?: (theme: ComponentStyle | ComponentMultiStyle) => void
+  }
 
 export const ComponentThemePreview = memo(
   forwardRef<ComponentThemePreviewProps, "div">(
     (
       {
+        name,
         themeDirection,
         onThemeDirectionChange,
         onThemePreviewClose,
@@ -50,8 +55,10 @@ export const ComponentThemePreview = memo(
       ref,
     ) => {
       const isVertical = themeDirection === "vertical"
-      //NOTE: multiかどうかはtypeを見ればよさそう
-      const [theme, setTheme] = useState(defaultTheme.components.Button)
+      //TODO: multiかどうかはtypeを見ればよさそう
+      const [theme, setTheme] = useState(
+        defaultTheme.components[name as keyof typeof defaultTheme.components],
+      )
 
       const temp = Object.keys(theme).map((key) => {
         const styles = theme[key as keyof ComponentStyle]

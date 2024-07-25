@@ -58,7 +58,7 @@ const UIProvider: FC<PreviewUIProvider> = ({
 }
 
 export type ComponentPreviewProps = BoxProps &
-  Pick<Component, "paths"> & {
+  Pick<Component, "paths" | "name"> & {
     containerProps?: ComponentContainerProps
     iframe?: boolean
     setThemeRef?: MutableRefObject<
@@ -73,7 +73,14 @@ const createCache = weakMemoize((container: Node) =>
 export const ComponentPreview = memo(
   forwardRef<ComponentPreviewProps, "div">(
     (
-      { paths, containerProps: _containerProps, iframe, setThemeRef, ...rest },
+      {
+        paths,
+        name,
+        containerProps: _containerProps,
+        iframe,
+        setThemeRef,
+        ...rest
+      },
       ref,
     ) => {
       const Component = dynamic(() => import(`/contents/${paths.component}`))
@@ -111,9 +118,10 @@ export const ComponentPreview = memo(
         }
       }, [colorMode, themeScheme])
 
+      //TODO: コンポーネントの見分け
       const [componentTheme, setTheme] = useState<
         ComponentStyle | ComponentMultiStyle
-      >(defaultTheme.components.Button)
+      >(defaultTheme.components[name as keyof typeof defaultTheme.components])
 
       assignRef(setThemeRef, setTheme)
 
@@ -139,8 +147,9 @@ export const ComponentPreview = memo(
         return props
       }, [_containerProps])
 
+      //TODO: コンポーネントの見分け
       const theme = merge(defaultTheme, {
-        components: { Button: componentTheme },
+        components: { [name]: componentTheme },
       })
 
       const environment: Environment = {
