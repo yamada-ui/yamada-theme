@@ -11,10 +11,7 @@ export const getStaticPaths = getStaticComponentPaths("forms")
 export const getStaticProps = getStaticComponentProps("forms")
 
 const Page: NextPageWithConfig<PageProps> = ({
-  // categoryGroup,
-  // category,
   component,
-  // componentTree,
 }) => {
   if (component) {
     

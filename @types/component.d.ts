@@ -18,11 +18,11 @@ declare module "component" {
     html_url: string
   }
 
-  type ComponentCode = {
-    name: string
-    path: string
-    code: string
-  }
+  // type ComponentCode = {
+  //   name: string
+  //   path: string
+  //   code: string
+  // }
 
   type ComponentPaths = {
     component: string
