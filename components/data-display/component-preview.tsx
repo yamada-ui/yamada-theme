@@ -9,7 +9,6 @@ import {
   EnvironmentProvider,
   forwardRef,
   GlobalStyle,
-  Loading,
   LoadingProvider,
   NoticeProvider,
   ResetStyle,
@@ -27,7 +26,6 @@ import type {
   ComponentStyle,
   Environment,
   HTMLUIProps,
-  LoadingProps,
   UIProviderProps,
 } from "@yamada-ui/react"
 import dynamic from "next/dynamic"
@@ -36,7 +34,9 @@ import { memo, useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import type { Component, ComponentContainerProps } from "component"
 
-const UIProvider: FC<UIProviderProps & { environment?: Environment }> = ({
+type PreviewUIProvider = UIProviderProps & { environment?: Environment }
+
+const UIProvider: FC<PreviewUIProvider> = ({
   theme = defaultTheme,
   config = defaultConfig,
   children,
@@ -60,7 +60,6 @@ const UIProvider: FC<UIProviderProps & { environment?: Environment }> = ({
 export type ComponentPreviewProps = BoxProps &
   Pick<Component, "paths"> & {
     containerProps?: ComponentContainerProps
-    loadingProps?: LoadingProps
     iframe?: boolean
     setThemeRef?: MutableRefObject<
       (theme: ComponentStyle | ComponentMultiStyle) => void
@@ -74,18 +73,10 @@ const createCache = weakMemoize((container: Node) =>
 export const ComponentPreview = memo(
   forwardRef<ComponentPreviewProps, "div">(
     (
-      {
-        paths,
-        containerProps: _containerProps,
-        loadingProps,
-        iframe,
-        setThemeRef,
-        ...rest
-      },
+      { paths, containerProps: _containerProps, iframe, setThemeRef, ...rest },
       ref,
     ) => {
       const Component = dynamic(() => import(`/contents/${paths.component}`))
-      console.log(Component)
 
       const { colorMode } = useColorMode()
       const { themeScheme } = useTheme()
@@ -126,17 +117,6 @@ export const ComponentPreview = memo(
 
       assignRef(setThemeRef, setTheme)
 
-      const { loading, value } = {
-        loading: false,
-        value: {
-          config: undefined,
-          //TODO: refactor
-          theme: merge(defaultTheme, {
-            components: { Button: componentTheme },
-          }),
-        },
-      }
-
       const containerProps = useMemo<HTMLUIProps<"div">>(() => {
         const { centerContent, ...rest } = _containerProps ?? {}
 
@@ -159,10 +139,20 @@ export const ComponentPreview = memo(
         return props
       }, [_containerProps])
 
+      const theme = merge(defaultTheme, {
+        components: { Button: componentTheme },
+      })
+
       const environment: Environment = {
         getDocument: () => iframeRef.current?.contentDocument ?? document,
         getWindow: () =>
           iframeRef.current?.contentDocument?.defaultView ?? window,
+      }
+
+      const providerProps: Omit<PreviewUIProvider, "children"> = {
+        theme,
+        environment,
+        themeSchemeManager,
       }
 
       return iframe ? (
@@ -177,9 +167,7 @@ export const ComponentPreview = memo(
           {head && body
             ? createPortal(
                 <CacheProvider value={createCache(head)}>
-                  <UIProvider
-                    {...{ ...value, environment, themeSchemeManager }}
-                  >
+                  <UIProvider {...providerProps}>
                     <Center
                       ref={ref}
                       flexDirection="column"
@@ -187,15 +175,9 @@ export const ComponentPreview = memo(
                       minH="48"
                       {...rest}
                     >
-                      {!loading ? (
-                        <Box boxSize="full" flex="1" {...containerProps}>
-                          <Component />
-                        </Box>
-                      ) : (
-                        <Center boxSize="full" flex="1">
-                          <Loading size="6xl" {...loadingProps} />
-                        </Center>
-                      )}
+                      <Box boxSize="full" flex="1" {...containerProps}>
+                        <Component />
+                      </Box>
                     </Center>
                   </UIProvider>
                 </CacheProvider>,
@@ -204,7 +186,7 @@ export const ComponentPreview = memo(
             : undefined}
         </ui.iframe>
       ) : (
-        <UIProvider {...{ ...value, environment, themeSchemeManager }}>
+        <UIProvider {...providerProps}>
           <Center
             ref={ref}
             flexDirection="column"
@@ -212,15 +194,9 @@ export const ComponentPreview = memo(
             minH="48"
             {...rest}
           >
-            {!loading ? (
-              <Box boxSize="full" flex="1" {...containerProps}>
-                <Component />
-              </Box>
-            ) : (
-              <Center boxSize="full" flex="1">
-                <Loading size="6xl" {...loadingProps} />
-              </Center>
-            )}
+            <Box boxSize="full" flex="1" {...containerProps}>
+              <Component />
+            </Box>
           </Center>
         </UIProvider>
       )

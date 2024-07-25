@@ -96,7 +96,13 @@ export const ComponentBody = memo(
             overflow="auto"
             h="full"
           >
-            <ComponentPreview paths={paths} setThemeRef={setThemeRef} />
+            <ComponentPreview
+              paths={paths}
+              setThemeRef={setThemeRef}
+              borderTopWidth="1px"
+              // containerProps={metadata?.options?.container}
+              // iframe={metadata?.options?.iframe}
+            />
           </ResizableItem>
 
           {isThemePreviewOpen ? (
