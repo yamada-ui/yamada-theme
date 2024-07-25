@@ -280,7 +280,7 @@ const ListItemIcon: FC<ListItemIconProps> = memo(({ icon, ...rest }) => {
       return <GitPullRequestArrow fontSize="2xl" {...rest} />
 
     case "yamada-ui":
-      return <YamadaUI boxSize="1.5rem" {...rest} />
+      return <YamadaUI fontSize="2xl" {...rest} />
 
     case "paintbrush":
       return <Paintbrush fontSize="2xl" {...rest} />
