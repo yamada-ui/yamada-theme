@@ -1,13 +1,18 @@
 pre-commit:
   piped: true
   commands:
-    1_format:
+    1_spellcheck:
+      glob: "*.{js,jsx,mjs,ts,tsx,mts,md,mdx}"
+      run: |
+        pnpm cspell {staged_files}
+
+    2_format:
       glob: "*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,d.ts,yml,yaml,md,mdx,json,html,css}"
       run: |
         pnpm prettier {staged_files} --write
       stage_fixed: true
 
-    2_lint:
+    3_lint:
       glob: "*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,d.ts}"
       run: |
         pnpm eslint {staged_files} --max-warnings=0 --fix
