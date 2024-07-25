@@ -43,7 +43,6 @@ export const getStaticComponentProps =
 
     return { props, notFound: !component }
   }
-// }
 
 export const getStaticComponentPaths =
   (categoryGroupName: string) =>

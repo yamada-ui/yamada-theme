@@ -110,9 +110,6 @@ export const getComponentPaths =
     return paths
   }
 
-const omitComponentFiles = (fileNames: string[]) =>
-  fileNames.filter((fileName) => !["metadata.json"].includes(fileName))
-
 const getMetadata = (dirPath: string) => async (locale: Locale) => {
   const defaultLocale = CONSTANT.I18N.DEFAULT_LOCALE
 
@@ -150,13 +147,10 @@ export const getComponent =
 
       if (!existsSync(componentPath)) return undefined
 
-      let fileNames = await readdir(dirPath)
-
+      //TODO: メタデータの取得が必要か考える
       const metadata = await getMetadata(dirPath)(locale)
       const hasTheme = existsSync(themePath)
       const hasConfig = existsSync(configPath)
-
-      fileNames = omitComponentFiles(fileNames)
 
       const paths = {
         component: validComponentPath,
@@ -164,43 +158,12 @@ export const getComponent =
         config: hasConfig ? validConfigPath : null,
       }
 
-      const fileList = metadata?.options?.fileList
-
-      const components = (
-        await Promise.all(
-          fileNames.map(async (name) => {
-            const filePath = path.join(dirPath, name)
-            const code = await readFile(filePath, "utf-8")
-
-            return { name, path: filePath, code }
-          }),
-        )
-      ).sort((componentA, componentB) => {
-        if (fileList) {
-          const positionA = fileList.indexOf(componentA.name)
-          const positionB = fileList.indexOf(componentB.name)
-
-          if (positionA !== -1 && positionB !== -1) {
-            return positionA - positionB
-          } else if (positionA !== -1) {
-            return -1
-          } else if (positionB !== -1) {
-            return 1
-          }
-        }
-
-        if (componentA.name === "index.tsx") return -1
-        if (componentB.name === "index.tsx") return 1
-        return 0
-      })
-
       slug = `/${slug}`
 
       const data: Component = {
         name,
         slug,
         paths,
-        components,
         metadata,
       }
 
