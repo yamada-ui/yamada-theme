@@ -75,7 +75,7 @@ export const Tree = memo(
 type RecursiveListItemProps = ComponentCategoryGroup & { isNested?: boolean }
 
 const RecursiveListItem: FC<RecursiveListItemProps> = memo(
-  ({ icon, title, slug, items = [], isNested, isExpanded }) => {
+  ({ icon, name: title, slug, items = [], isNested, isExpanded }) => {
     const [isOpen, { on, toggle }] = useBoolean(isExpanded)
 
     useEffect(() => {

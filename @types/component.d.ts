@@ -66,6 +66,7 @@ declare module "component" {
     description: string
   }
 
+  //TODO: metadataをどうするか考える
   type OriginMetadata = LocaleMetadata<CommonMetadata> & SharedMetadata
 
   type ComponentMetadata = CommonMetadata & SharedMetadata

@@ -7,10 +7,11 @@ import { toArray } from "./array"
 import {
   checkInvalidLabels,
   getComponent,
+  getComponentCategoryGroup,
   getComponentPaths,
 } from "./component"
 import type { Locale } from "./i18n"
-import type { Component } from "component"
+import type { Component, ComponentCategoryGroup } from "component"
 
 export const getServerSideCommonProps = async ({
   req,
@@ -28,10 +29,17 @@ export const getStaticComponentProps =
   }: GetStaticPropsContext): Promise<{
     props: {
       component?: Component
+      componentTree: ComponentCategoryGroup[]
     }
     notFound?: boolean
   }> => {
     const paths = toArray(params?.slug ?? [])
+
+    const componentTree = await getComponentCategoryGroup()(
+      locale as Locale,
+      `/${[categoryGroupName, ...paths].join("/")}`,
+    )
+    console.log(componentTree)
 
     const slug = [categoryGroupName, ...paths].join("/")
 
@@ -39,7 +47,7 @@ export const getStaticComponentProps =
 
     if (component) checkInvalidLabels(component)
 
-    const props = { component }
+    const props = { component, componentTree }
 
     return { props, notFound: !component }
   }

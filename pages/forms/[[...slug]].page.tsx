@@ -1,4 +1,5 @@
 import type { InferGetStaticPropsType, NextPageWithConfig } from "next"
+import { AppProvider } from "contexts/app-context"
 import { ComponentProvider } from "contexts/component-context"
 import { ComponentLayout } from "layouts/component-layout"
 import { getStaticComponentPaths, getStaticComponentProps } from "utils/next"
@@ -10,18 +11,17 @@ export const getStaticPaths = getStaticComponentPaths("forms")
 
 export const getStaticProps = getStaticComponentProps("forms")
 
-const Page: NextPageWithConfig<PageProps> = ({
-  component,
-}) => {
+const Page: NextPageWithConfig<PageProps> = ({ component, componentTree }) => {
   if (component) {
-    
     return (
-      <ComponentProvider {...component}>
-        <ComponentLayout
-        // title={metadata?.title}
-        // description={metadata?.description}
-        />
-      </ComponentProvider>
+      <AppProvider {...{ componentTree }}>
+        <ComponentProvider {...component}>
+          <ComponentLayout
+          // title={metadata?.title}
+          // description={metadata?.description}
+          />
+        </ComponentProvider>
+      </AppProvider>
     )
   }
 
