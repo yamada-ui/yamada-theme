@@ -7,10 +7,12 @@ import {
   useLoading,
   useUpdateEffect,
   useBreakpoint,
+  HStack,
+  Center,
 } from "@yamada-ui/react"
 import { useCallback, useEffect, useState } from "react"
 import type { SetStateAction, FC } from "react"
-import { ComponentBody, ComponentHeader } from "components/layouts"
+import { ComponentBody, ComponentHeader, Sidebar } from "components/layouts"
 import { CONSTANT } from "constant"
 import { getCookie, setCookie } from "utils/storage"
 
@@ -98,23 +100,40 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
   }, [isMounted])
 
   return (
-    <VStack display={isMounted ? "flex" : "none"} h="100dvh" gap="0" {...rest}>
-      <ComponentHeader
-        {...{
-          themeDirection: themeDirection,
-          isThemePreviewOpen: isThemePreviewOpen,
-          onThemePreviewOpen: onThemePreviewOpen,
-        }}
-      />
+    <Center as="main">
+      <HStack
+        alignItems="flex-start"
+        w="full"
+        maxW="full"
+        gap="0"
+        px={{ base: "lg", md: "md" }}
+      >
+        <Sidebar display={{ base: "flex", lg: "none" }} />
 
-      <ComponentBody
-        {...{
-          themeDirection: themeDirection,
-          onThemeDirectionChange: onThemeDirectionChange,
-          isThemePreviewOpen: isThemePreviewOpen,
-          onThemePreviewClose: onThemePreviewClose,
-        }}
-      />
-    </VStack>
+        <VStack
+          display={isMounted ? "flex" : "none"}
+          h="100dvh"
+          gap="0"
+          {...rest}
+        >
+          <ComponentHeader
+            {...{
+              themeDirection: themeDirection,
+              isThemePreviewOpen: isThemePreviewOpen,
+              onThemePreviewOpen: onThemePreviewOpen,
+            }}
+          />
+
+          <ComponentBody
+            {...{
+              themeDirection: themeDirection,
+              onThemeDirectionChange: onThemeDirectionChange,
+              isThemePreviewOpen: isThemePreviewOpen,
+              onThemePreviewClose: onThemePreviewClose,
+            }}
+          />
+        </VStack>
+      </HStack>
+    </Center>
   )
 }
