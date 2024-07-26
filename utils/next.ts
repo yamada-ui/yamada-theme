@@ -21,6 +21,14 @@ export const getServerSideCommonProps = async ({
   return { props: { cookies } }
 }
 
+export const getStaticCommonProps = async ({
+  locale,
+}: GetStaticPropsContext) => {
+  const componentTree = await getComponentCategoryGroup()(locale as Locale)
+
+  return { props: { componentTree } }
+}
+
 export const getStaticComponentProps =
   (categoryGroupName: string) =>
   async ({
@@ -39,7 +47,6 @@ export const getStaticComponentProps =
       locale as Locale,
       `/${[categoryGroupName, ...paths].join("/")}`,
     )
-    console.log(componentTree)
 
     const slug = [categoryGroupName, ...paths].join("/")
 
