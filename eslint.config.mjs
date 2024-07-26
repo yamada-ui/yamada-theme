@@ -168,7 +168,7 @@ const typescriptTSESConfigArray = [
   },
 ]
 
-/** @type {Pick<TSESLintConfig, "name" | "files" | "plugins" | "rules">} */
+/** @type {Pick<TSESLintConfig, "name" | "files" | "plugins" | "rules" | "settings">} */
 const reactTSESConfig = {
   name: "@yamada-theme/react/base",
   files: sourceFilePaths.all,
