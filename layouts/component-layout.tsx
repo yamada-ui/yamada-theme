@@ -8,7 +8,6 @@ import {
   useUpdateEffect,
   useBreakpoint,
   HStack,
-  Center,
 } from "@yamada-ui/react"
 import { useCallback, useEffect, useState } from "react"
 import type { SetStateAction, FC } from "react"
@@ -100,7 +99,15 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
   }, [isMounted])
 
   return (
-    <Center as="main">
+    <VStack display={isMounted ? "flex" : "none"} h="100dvh" gap="0" {...rest}>
+      <ComponentHeader
+        {...{
+          themeDirection: themeDirection,
+          isThemePreviewOpen: isThemePreviewOpen,
+          onThemePreviewOpen: onThemePreviewOpen,
+        }}
+      />
+
       <HStack
         alignItems="flex-start"
         w="full"
@@ -110,30 +117,15 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
       >
         <Sidebar display={{ base: "flex", lg: "none" }} />
 
-        <VStack
-          display={isMounted ? "flex" : "none"}
-          h="100dvh"
-          gap="0"
-          {...rest}
-        >
-          <ComponentHeader
-            {...{
-              themeDirection: themeDirection,
-              isThemePreviewOpen: isThemePreviewOpen,
-              onThemePreviewOpen: onThemePreviewOpen,
-            }}
-          />
-
-          <ComponentBody
-            {...{
-              themeDirection: themeDirection,
-              onThemeDirectionChange: onThemeDirectionChange,
-              isThemePreviewOpen: isThemePreviewOpen,
-              onThemePreviewClose: onThemePreviewClose,
-            }}
-          />
-        </VStack>
+        <ComponentBody
+          {...{
+            themeDirection: themeDirection,
+            onThemeDirectionChange: onThemeDirectionChange,
+            isThemePreviewOpen: isThemePreviewOpen,
+            onThemePreviewClose: onThemePreviewClose,
+          }}
+        />
       </HStack>
-    </Center>
+    </VStack>
   )
 }
