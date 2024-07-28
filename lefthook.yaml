@@ -1,19 +1,27 @@
 pre-commit:
   piped: true
   commands:
-    1_format:
-      glob: "*.{js,jsx,ts,tsx,mjs,mts,yaml,json,html,css}"
+    spellcheck:
+      priority: 1
+      glob: "*.{js,jsx,mjs,ts,tsx,mts,md,mdx}"
       run: |
-        pnpm prettier {staged_files} --write \
-        | grep -v "(unchanged)" \
-        | awk '{print $1}' \
-        | xargs git add
+        pnpm cspell {staged_files}
 
-    2_lint:
-      glob: "*.{js,jsx,ts,tsx,mjs,mts}"
-      run: pnpm eslint {staged_files} --max-warnings=0
+    format:
+      priority: 2
+      glob: "*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,d.ts,yml,yaml,md,mdx,json,html,css}"
+      run: |
+        pnpm prettier {staged_files} --write
+      stage_fixed: true
+
+    lint:
+      priority: 3
+      glob: "*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,d.ts}"
+      run: |
+        pnpm eslint {staged_files} --max-warnings=0 --fix
+      stage_fixed: true
 
 commit-msg:
   commands:
     "lint commit message":
-      run: pnpm commitlint --edit {1} --config .commitlintrc
+      run: pnpm commitlint --edit {1}
