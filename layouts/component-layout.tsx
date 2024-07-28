@@ -111,6 +111,7 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
       <HStack
         alignItems="flex-start"
         w="full"
+        h="100dvh"
         maxW="full"
         gap="0"
         px={{ base: "lg", md: "md" }}

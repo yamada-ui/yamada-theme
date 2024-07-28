@@ -74,7 +74,7 @@ export const ComponentBody = memo(
       useEffect(() => {
         if (!MOBILE_BREAKPOINTS.includes(breakpoint)) return
 
-        if (controlRef.current) controlRef.current.resize(100)
+        if (controlRef.current) controlRef.current.resize(50)
       }, [breakpoint])
 
       const isMobile = MOBILE_BREAKPOINTS.includes(breakpoint)
