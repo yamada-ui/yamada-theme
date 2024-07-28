@@ -86,13 +86,13 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
     if (isOpen) themeControls.onOpen()
 
     if (!MOBILE_BREAKPOINTS.includes(breakpoint)) {
-      const codeDirection = getCookie<ThemeDirection>(
+      const themeDirection = getCookie<ThemeDirection>(
         document.cookie,
         CONSTANT.STORAGE.COMPONENT_THEME_PREVIEW_DIRECTION,
         "vertical",
       )
 
-      setThemeDirection(codeDirection)
+      setThemeDirection(themeDirection)
     }
 
     screen.finish()
