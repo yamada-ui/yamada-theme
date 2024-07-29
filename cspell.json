@@ -1,18 +1,22 @@
 {
-    "flagWords": [],
-    "words": [
-        "commitlint",
-        "dirents",
-        "fontawesome",
-        "guldo",
-        "HIROTOMO",
-        "HTMLUI",
-        "kurillin",
-        "lefthook",
-        "lucide",
-        "typecheck",
-        "yamcha"
-    ],
-    "language": "en",
-    "version": "0.2"
+  "flagWords": [],
+  "words": [
+    "typecheck",
+    "fontawesome",
+    "lefthook",
+    "HTMLUI",
+    "HIROTOMO",
+    "guldo",
+    "yamcha",
+    "kurillin",
+    "tses",
+    "tseslint",
+    "multilines",
+    "proptypes",
+    "commitlint",
+    "lucide",
+    "dirents"
+  ],
+  "language": "en",
+  "version": "0.2"
 }
