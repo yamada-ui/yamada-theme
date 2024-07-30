@@ -5,28 +5,25 @@ import {
   AccordionLabel,
   AccordionPanel,
   defaultTheme,
-  Editable,
-  EditableInput,
-  EditablePreview,
   forwardRef,
   handlerAll,
   HStack,
   IconButton,
   merge,
-  Spacer,
   TabList,
   TabPanel,
   Tabs,
-  Text,
   VStack,
 } from "@yamada-ui/react"
 import type {
   ComponentMultiStyle,
   ComponentStyle,
+  Dict,
   TabsProps,
 } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
 import { memo, useState } from "react"
+import { ThemeBlock } from "./theme-block"
 import type { Component } from "component"
 import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
 import type { ThemeDirection } from "layouts/component-layout"
@@ -49,7 +46,7 @@ export const ComponentThemePreview = memo(
         themeDirection,
         onThemeDirectionChange,
         onThemePreviewClose,
-        onChangeTheme,
+        onChangeTheme: onChangeThemeProp,
         ...rest
       },
       ref,
@@ -60,6 +57,15 @@ export const ComponentThemePreview = memo(
         defaultTheme.components[name as keyof typeof defaultTheme.components],
       )
 
+      const onChangeTheme = (key: string) => (prop: Dict) => {
+        const newTheme = merge(theme, {
+          [key]: prop,
+        })
+
+        setTheme(newTheme)
+        onChangeThemeProp?.(newTheme)
+      }
+
       const temp = Object.keys(theme).map((key) => {
         const styles = theme[key as keyof ComponentStyle]
 
@@ -68,31 +74,10 @@ export const ComponentThemePreview = memo(
             <AccordionLabel>{key}</AccordionLabel>
             <AccordionPanel>
               <VStack>
-                {styles !== undefined &&
-                  Object.entries(styles).map(([innerKey, value]) => {
-                    return (
-                      <HStack key={innerKey}>
-                        <Text>{innerKey}</Text>
-
-                        <Spacer />
-
-                        <Editable
-                          defaultValue={value.toString()}
-                          onChange={(value) => {
-                            const newTheme = merge(theme, {
-                              [key]: { [innerKey]: value },
-                            })
-
-                            setTheme(newTheme)
-                            onChangeTheme?.(newTheme)
-                          }}
-                        >
-                          <EditablePreview />
-                          <EditableInput />
-                        </Editable>
-                      </HStack>
-                    )
-                  })}
+                <ThemeBlock
+                  styles={styles}
+                  onChangeTheme={onChangeTheme(key)}
+                />
               </VStack>
             </AccordionPanel>
           </AccordionItem>
