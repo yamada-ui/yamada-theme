@@ -1,18 +1,19 @@
 {
   "flagWords": [],
   "words": [
-    "typecheck",
     "fontawesome",
-    "lefthook",
-    "HTMLUI",
-    "HIROTOMO",
     "guldo",
-    "yamcha",
+    "HIROTOMO",
+    "HTMLUI",
     "kurillin",
+    "lefthook",
+    "lucide",
+    "multilines",
+    "proptypes",
     "tses",
     "tseslint",
-    "multilines",
-    "proptypes"
+    "typecheck",
+    "yamcha"
   ],
   "language": "en",
   "version": "0.2"
