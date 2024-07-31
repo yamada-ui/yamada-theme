@@ -17,15 +17,30 @@ export type ThemeBlockProps = {
 }
 
 type RecursiveRowProps = {
+  parentTree?: string[]
+  onChangeTheme: (theme: Dict) => void
   name: string
   value: any
 }
 
 //TODO: ((props: UIStyleProps) => CSSUIObject)の型にも対応する必要がある
-const RecursiveRow: FC<RecursiveRowProps> = ({ name, value }) => {
+const RecursiveRow: FC<RecursiveRowProps> = ({
+  parentTree,
+  name,
+  value,
+  onChangeTheme,
+}) => {
   if (isObject(value)) {
     return Object.entries(value).map(([key, value]) => {
-      return <RecursiveRow key={key} name={key} value={value} />
+      return (
+        <RecursiveRow
+          key={key}
+          parentTree={parentTree ? [...parentTree, name] : [name]}
+          name={key}
+          value={value}
+          onChangeTheme={onChangeTheme}
+        />
+      )
     })
   } else {
     return (
@@ -36,8 +51,18 @@ const RecursiveRow: FC<RecursiveRowProps> = ({ name, value }) => {
 
         <Editable
           defaultValue={value.toString()}
-          //TODO: onchangeThemeを何とかする（再帰的にできるようにしたい）
-          // onChange={(value) => onChangeTheme({ [key]: value })}
+          onChange={(value) => {
+            const createObject = (parentTree: string[]): Dict =>
+              parentTree.reduceRight(
+                (acc, key) => ({ [key]: acc }),
+                value as unknown as Dict,
+              )
+
+            const updatedTheme = createObject(
+              parentTree ? [...parentTree, name] : [name],
+            )
+            onChangeTheme(updatedTheme)
+          }}
         >
           <EditablePreview />
           <EditableInput />
@@ -47,25 +72,15 @@ const RecursiveRow: FC<RecursiveRowProps> = ({ name, value }) => {
   }
 }
 
-export const ThemeBlock: FC<ThemeBlockProps> = ({ styles }) => {
+export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
   if (styles === undefined) return
 
-  return Object.entries(styles).map(([key, value]) => {
-    return <RecursiveRow key={key} name={key} value={value} />
-    // return (
-    //   <HStack key={key}>
-    //     <Text>{key}</Text>
-
-    //     <Spacer />
-
-    //     <Editable
-    //       defaultValue={value.toString()}
-    //       onChange={(value) => onChangeTheme({ [key]: value })}
-    //     >
-    //       <EditablePreview />
-    //       <EditableInput />
-    //     </Editable>
-    //   </HStack>
-    // )
-  })
+  return Object.entries(styles).map(([key, value]) => (
+    <RecursiveRow
+      key={key}
+      name={key}
+      value={value}
+      onChangeTheme={onChangeTheme}
+    />
+  ))
 }
