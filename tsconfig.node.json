@@ -1,8 +1,6 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
-  "include": [
-    "vitest.config.mts"
-  ],
+  "include": ["vitest.config.mts"],
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",

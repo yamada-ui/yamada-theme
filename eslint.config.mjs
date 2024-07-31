@@ -5,7 +5,6 @@ import eslint from "@eslint/js"
 import pluginNext from "@next/eslint-plugin-next"
 import pluginImport from "eslint-plugin-import"
 import pluginJsxA11y from "eslint-plugin-jsx-a11y"
-import pluginPrettier from "eslint-plugin-prettier"
 import pluginReact from "eslint-plugin-react"
 import pluginReactHooks from "eslint-plugin-react-hooks"
 import pluginTestingLibrary from "eslint-plugin-testing-library"
@@ -282,12 +281,8 @@ const prettierTSESConfig = {
   files: sourceFilePaths.all,
   plugins: {
     react: pluginReact,
-    prettier: pluginPrettier,
   },
   rules: {
-    ...pluginPrettier.configs.recommended.rules,
-
-    // Set of rules that are not deprecated in `eslint-config-prettier`.
     curly: "off",
     "no-unexpected-multiline": "off",
     "react/jsx-child-element-spacing": "off",
