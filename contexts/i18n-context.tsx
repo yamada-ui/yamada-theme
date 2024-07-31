@@ -1,4 +1,4 @@
-import type { Path, StringLiteral } from "@yamada-ui/react"
+import type { Dict, Path, StringLiteral } from "@yamada-ui/react"
 import {
   getMemoizedObject as get,
   isString,
@@ -17,7 +17,7 @@ import {
 } from "react"
 import type { PropsWithChildren, FC } from "react"
 import { CONSTANT } from "constant"
-import { getUI, type Locale, type UI } from "utils/i18n"
+import { getContents, getUI, type Locale, type UI } from "utils/i18n"
 
 type I18nContext = {
   locale: Locale
@@ -31,6 +31,7 @@ type I18nContext = {
     callback?: (str: string, index: number) => JSX.Element,
   ) => string | JSX.Element[]
   changeLocale: (locale: Locale & StringLiteral) => void
+  contents: Dict[]
 }
 
 const I18nContext = createContext<I18nContext>({
@@ -38,6 +39,7 @@ const I18nContext = createContext<I18nContext>({
   t: () => "",
   tc: () => "",
   changeLocale: noop,
+  contents: [],
 })
 
 export type I18nProviderProps = PropsWithChildren
@@ -46,6 +48,7 @@ export const I18nProvider: FC<I18nProviderProps> = ({ children }) => {
   const { locale, pathname, asPath, push } = useRouter()
 
   const ui = useMemo(() => getUI(locale as Locale), [locale])
+  const contents = useMemo(() => getContents(locale as Locale), [locale])
 
   const changeLocale = useCallback(
     (locale: Locale & StringLiteral) => {
@@ -109,8 +112,8 @@ export const I18nProvider: FC<I18nProviderProps> = ({ children }) => {
   )
 
   const value = useMemo(
-    () => ({ locale: locale as Locale, t, tc, changeLocale }),
-    [changeLocale, locale, t, tc],
+    () => ({ locale: locale as Locale, t, tc, changeLocale, contents }),
+    [changeLocale, contents, locale, t, tc],
   )
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
