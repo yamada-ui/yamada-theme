@@ -1,19 +1,15 @@
 import { X } from "@yamada-ui/lucide"
 import {
-  Accordion,
-  AccordionItem,
-  AccordionLabel,
-  AccordionPanel,
   defaultTheme,
   forwardRef,
   handlerAll,
   HStack,
   IconButton,
   merge,
+  Tab,
   TabList,
   TabPanel,
   Tabs,
-  VStack,
 } from "@yamada-ui/react"
 import type {
   ComponentMultiStyle,
@@ -66,24 +62,6 @@ export const ComponentThemePreview = memo(
         onChangeThemeProp?.(newTheme)
       }
 
-      const temp = Object.keys(theme).map((key) => {
-        const styles = theme[key as keyof ComponentStyle]
-
-        return (
-          <AccordionItem key={key}>
-            <AccordionLabel>{key}</AccordionLabel>
-            <AccordionPanel>
-              <VStack>
-                <ThemeBlock
-                  styles={styles}
-                  onChangeTheme={onChangeTheme(key)}
-                />
-              </VStack>
-            </AccordionPanel>
-          </AccordionItem>
-        )
-      })
-
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>
           <TabList position="sticky" top="0" bg={["white", "black"]}>
@@ -96,7 +74,17 @@ export const ComponentThemePreview = memo(
               scrollbarWidth="none"
               _scrollbar={{ display: "none" }}
             >
-              tabs
+              {Object.keys(theme).map((key) => (
+                <Tab
+                  key={key}
+                  mb="0"
+                  overflow="visible"
+                  color="muted"
+                  _focusVisible={{}}
+                >
+                  {key}
+                </Tab>
+              ))}
             </HStack>
 
             <HStack ms="md" me="sm" gap="0">
@@ -135,25 +123,18 @@ export const ComponentThemePreview = memo(
             </HStack>
           </TabList>
 
-          <TabPanel>
-            {/* <VStack divider={<Divider size="full" />}> */}
-            {/*   <HStack> */}
-            {/*     <Text>title</Text> */}
-            {/**/}
-            {/*     <Spacer /> */}
-            {/**/}
-            {/*     <Input /> */}
-            {/*   </HStack> */}
-            {/*   <HStack> */}
-            {/*     <Text>color</Text> */}
-            {/**/}
-            {/*     <Spacer /> */}
-            {/**/}
-            {/*     <ColorPicker /> */}
-            {/*   </HStack> */}
-            {/* </VStack> */}
-            <Accordion>{temp}</Accordion>
-          </TabPanel>
+          {Object.keys(theme).map((key) => {
+            const styles = theme[key as keyof ComponentStyle]
+
+            return (
+              <TabPanel key={key}>
+                <ThemeBlock
+                  styles={styles}
+                  onChangeTheme={onChangeTheme(key)}
+                />
+              </TabPanel>
+            )
+          })}
         </Tabs>
       )
     },
