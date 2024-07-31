@@ -8,6 +8,7 @@ import {
   Spacer,
   Text,
   UIStyle,
+  VStack,
 } from "@yamada-ui/react"
 import { FC } from "react"
 
@@ -31,17 +32,23 @@ const RecursiveRow: FC<RecursiveRowProps> = ({
   onChangeTheme,
 }) => {
   if (isObject(value)) {
-    return Object.entries(value).map(([key, value]) => {
-      return (
-        <RecursiveRow
-          key={key}
-          parentTree={parentTree ? [...parentTree, name] : [name]}
-          name={key}
-          value={value}
-          onChangeTheme={onChangeTheme}
-        />
-      )
-    })
+    return (
+      <>
+        <Text>{name}</Text>
+
+        <VStack pl="lg" gap={0}>
+          {Object.entries(value).map(([key, value]) => (
+            <RecursiveRow
+              key={key}
+              parentTree={parentTree ? [...parentTree, name] : [name]}
+              name={key}
+              value={value}
+              onChangeTheme={onChangeTheme}
+            />
+          ))}
+        </VStack>
+      </>
+    )
   } else {
     return (
       <HStack key={name}>
