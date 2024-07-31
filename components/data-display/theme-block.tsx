@@ -4,6 +4,7 @@ import {
   EditableInput,
   EditablePreview,
   HStack,
+  isFunction,
   isObject,
   Spacer,
   Text,
@@ -24,14 +25,14 @@ type RecursiveRowProps = {
   value: any
 }
 
-//TODO: ((props: UIStyleProps) => CSSUIObject)の型にも対応する必要がある
 const RecursiveRow: FC<RecursiveRowProps> = ({
   parentTree,
   name,
   value,
   onChangeTheme,
 }) => {
-  if (isObject(value)) {
+  if (isObject(value) && !isFunction(value)) {
+    console.log(name)
     return (
       <>
         <Text>{name}</Text>
