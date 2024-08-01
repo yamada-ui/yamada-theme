@@ -48,6 +48,10 @@ export const ComponentThemePreview = memo(
       ref,
     ) => {
       const isVertical = themeDirection === "vertical"
+      const colorSchemes = Object.keys(
+        defaultTheme.semantics.colorSchemes ?? {},
+      )
+
       //TODO: multiかどうかはtypeを見ればよさそう
       const [theme, setTheme] = useState(
         defaultTheme.components[name as keyof typeof defaultTheme.components],
@@ -129,6 +133,7 @@ export const ComponentThemePreview = memo(
                 <TabPanel key={key}>
                   <DefaultPropsBlock
                     theme={theme}
+                    colorSchemes={colorSchemes}
                     onChangeTheme={onChangeTheme(key)}
                   />
                 </TabPanel>

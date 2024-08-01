@@ -31,6 +31,7 @@ export type ThemeBlockProps = {
 
 export type DefaultPropsBlockProps = {
   theme: ComponentStyle | ComponentMultiStyle
+  colorSchemes: string[]
   onChangeTheme: (theme: Dict) => void
 }
 
@@ -103,12 +104,15 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
 
 export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
   theme,
+  colorSchemes,
   onChangeTheme,
 }) => {
   const defaultProps = theme["defaultProps"]
+  //TODO: size, colorScheme
   const variants = theme["variants"]
+  const sizes = theme["sizes"]
 
-  const items: SegmentedControlItem[] =
+  const variantItems: SegmentedControlItem[] =
     variants !== undefined
       ? Object.keys(variants).map((value) => ({
           label: value,
@@ -116,19 +120,65 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
         }))
       : []
 
+  const sizeItems: SegmentedControlItem[] =
+    sizes !== undefined
+      ? Object.keys(sizes).map((value) => ({
+          label: value,
+          value: value,
+        }))
+      : []
+
+  const colorSchemeItems: SegmentedControlItem[] =
+    colorSchemes !== undefined
+      ? colorSchemes.map((value) => ({
+          label: value,
+          value: value,
+        }))
+      : []
+
   return (
-    <HStack>
-      <Text>variant</Text>
+    <VStack>
+      <HStack>
+        <Text>variant</Text>
 
-      <Spacer />
+        <Spacer />
 
-      <SegmentedControl
-        items={items}
-        defaultValue={defaultProps?.variant as string | undefined}
-        onChange={(value) => {
-          onChangeTheme({ variant: value })
-        }}
-      />
-    </HStack>
+        <SegmentedControl
+          items={variantItems}
+          defaultValue={defaultProps?.variant as string | undefined}
+          onChange={(value) => {
+            onChangeTheme({ variant: value })
+          }}
+        />
+      </HStack>
+
+      <HStack>
+        <Text>size</Text>
+
+        <Spacer />
+
+        <SegmentedControl
+          items={sizeItems}
+          defaultValue={defaultProps?.size as string | undefined}
+          onChange={(value) => {
+            onChangeTheme({ size: value })
+          }}
+        />
+      </HStack>
+
+      <HStack>
+        <Text>colorScheme</Text>
+
+        <Spacer />
+
+        <SegmentedControl
+          items={colorSchemeItems}
+          defaultValue={defaultProps?.colorScheme as string | undefined}
+          onChange={(value) => {
+            onChangeTheme({ colorScheme: value })
+          }}
+        />
+      </HStack>
+    </VStack>
   )
 }
