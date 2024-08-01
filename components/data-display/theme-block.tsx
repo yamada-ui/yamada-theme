@@ -9,8 +9,8 @@ import {
   HStack,
   isFunction,
   isObject,
-  SegmentedControl,
-  SegmentedControlItem,
+  RadioGroup,
+  RadioItem,
   Spacer,
   Text,
   UIStyle,
@@ -116,7 +116,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
   const variants = theme["variants"]
   const sizes = theme["sizes"]
 
-  const variantItems: SegmentedControlItem[] =
+  const variantItems: RadioItem[] =
     variants !== undefined
       ? Object.keys(variants).map((value) => ({
           label: value,
@@ -124,7 +124,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
         }))
       : []
 
-  const sizeItems: SegmentedControlItem[] =
+  const sizeItems: RadioItem[] =
     sizes !== undefined
       ? Object.keys(sizes).map((value) => ({
           label: value,
@@ -132,7 +132,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
         }))
       : []
 
-  const colorSchemeItems: SegmentedControlItem[] =
+  const colorSchemeItems: RadioItem[] =
     colorSchemes !== undefined
       ? colorSchemes.map((value) => ({
           label: value,
@@ -142,12 +142,11 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
 
   return (
     <VStack divider={<Divider />} gap={1}>
-      <HStack>
+      <HStack alignItems="flex-start" justifyContent="space-between">
         <Text>variant</Text>
 
-        <Spacer />
-
-        <SegmentedControl
+        <RadioGroup
+          w="60%"
           items={variantItems}
           defaultValue={defaultProps?.variant as string | undefined}
           onChange={(value) => {
@@ -156,12 +155,11 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
         />
       </HStack>
 
-      <HStack>
+      <HStack alignItems="flex-start" justifyContent="space-between">
         <Text>size</Text>
 
-        <Spacer />
-
-        <SegmentedControl
+        <RadioGroup
+          w="60%"
           items={sizeItems}
           defaultValue={defaultProps?.size as string | undefined}
           onChange={(value) => {
@@ -170,12 +168,11 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
         />
       </HStack>
 
-      <HStack>
+      <HStack alignItems="flex-start" justifyContent="space-between">
         <Text>colorScheme</Text>
 
-        <Spacer />
-
-        <SegmentedControl
+        <RadioGroup
+          w="60%"
           items={colorSchemeItems}
           defaultValue={defaultProps?.colorScheme as string | undefined}
           onChange={(value) => {
