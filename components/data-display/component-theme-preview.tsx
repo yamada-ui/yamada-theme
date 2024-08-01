@@ -127,7 +127,10 @@ export const ComponentThemePreview = memo(
             if (key === "defaultProps") {
               return (
                 <TabPanel key={key}>
-                  <DefaultPropsBlock theme={theme} />
+                  <DefaultPropsBlock
+                    theme={theme}
+                    onChangeTheme={onChangeTheme(key)}
+                  />
                 </TabPanel>
               )
             } else {

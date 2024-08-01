@@ -31,6 +31,7 @@ export type ThemeBlockProps = {
 
 export type DefaultPropsBlockProps = {
   theme: ComponentStyle | ComponentMultiStyle
+  onChangeTheme: (theme: Dict) => void
 }
 
 const RecursiveRow: FC<RecursiveRowProps> = ({
@@ -100,7 +101,10 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
   ))
 }
 
-export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({ theme }) => {
+export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
+  theme,
+  onChangeTheme,
+}) => {
   const defaultProps = theme["defaultProps"]
   const variants = theme["variants"]
 
@@ -121,6 +125,9 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({ theme }) => {
       <SegmentedControl
         items={items}
         defaultValue={defaultProps?.variant as string | undefined}
+        onChange={(value) => {
+          onChangeTheme({ variant: value })
+        }}
       />
     </HStack>
   )
