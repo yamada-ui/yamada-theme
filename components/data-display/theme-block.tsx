@@ -36,6 +36,10 @@ export type DefaultPropsBlockProps = {
   onChangeTheme: (theme: Dict) => void
 }
 
+// NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
+// テーブルにする？
+// TODO: RAWデータとの切り替えをできるようにする
+// TODO: 関数が入っている場合はRAWデータ固定にする。オブジェクトの表示もきれいにできるやつ作る
 const RecursiveRow: FC<RecursiveRowProps> = ({
   parentTree,
   name,

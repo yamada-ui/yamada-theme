@@ -48,11 +48,13 @@ export const ComponentThemePreview = memo(
       ref,
     ) => {
       const isVertical = themeDirection === "vertical"
+      // TODO: テーマをグローバルで保管するかとか考える
       const colorSchemes = Object.keys(
         defaultTheme.semantics.colorSchemes ?? {},
       )
 
-      //TODO: multiかどうかはtypeを見ればよさそう
+      // TODO: multiかどうかはtypeを見ればよさそう
+      // TODO: テーマをグローバルで保管するかどうするかとか考える
       const [theme, setTheme] = useState(
         defaultTheme.components[name as keyof typeof defaultTheme.components],
       )
