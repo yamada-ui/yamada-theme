@@ -19,7 +19,7 @@ import type {
 } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
 import { memo, useState } from "react"
-import { ThemeBlock } from "./theme-block"
+import { DefaultPropsBlock, ThemeBlock } from "./theme-block"
 import type { Component } from "component"
 import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
 import type { ThemeDirection } from "layouts/component-layout"
@@ -124,16 +124,24 @@ export const ComponentThemePreview = memo(
           </TabList>
 
           {Object.keys(theme).map((key) => {
-            const styles = theme[key as keyof ComponentStyle]
+            if (key === "defaultProps") {
+              return (
+                <TabPanel key={key}>
+                  <DefaultPropsBlock theme={theme} />
+                </TabPanel>
+              )
+            } else {
+              const styles = theme[key as keyof ComponentStyle]
 
-            return (
-              <TabPanel key={key}>
-                <ThemeBlock
-                  styles={styles}
-                  onChangeTheme={onChangeTheme(key)}
-                />
-              </TabPanel>
-            )
+              return (
+                <TabPanel key={key}>
+                  <ThemeBlock
+                    styles={styles}
+                    onChangeTheme={onChangeTheme(key)}
+                  />
+                </TabPanel>
+              )
+            }
           })}
         </Tabs>
       )

@@ -1,4 +1,6 @@
 import {
+  ComponentMultiStyle,
+  ComponentStyle,
   Dict,
   Editable,
   EditableInput,
@@ -6,6 +8,8 @@ import {
   HStack,
   isFunction,
   isObject,
+  SegmentedControl,
+  SegmentedControlItem,
   Spacer,
   Text,
   UIStyle,
@@ -13,16 +17,20 @@ import {
 } from "@yamada-ui/react"
 import { FC } from "react"
 
-export type ThemeBlockProps = {
-  styles?: UIStyle
-  onChangeTheme: (theme: Dict) => void
-}
-
 type RecursiveRowProps = {
   parentTree?: string[]
   onChangeTheme: (theme: Dict) => void
   name: string
   value: any
+}
+
+export type ThemeBlockProps = {
+  styles?: UIStyle
+  onChangeTheme: (theme: Dict) => void
+}
+
+export type DefaultPropsBlockProps = {
+  theme: ComponentStyle | ComponentMultiStyle
 }
 
 const RecursiveRow: FC<RecursiveRowProps> = ({
@@ -32,7 +40,6 @@ const RecursiveRow: FC<RecursiveRowProps> = ({
   onChangeTheme,
 }) => {
   if (isObject(value) && !isFunction(value)) {
-    console.log(name)
     return (
       <>
         <Text>{name}</Text>
@@ -91,4 +98,30 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
       onChangeTheme={onChangeTheme}
     />
   ))
+}
+
+export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({ theme }) => {
+  const defaultProps = theme["defaultProps"]
+  const variants = theme["variants"]
+
+  const items: SegmentedControlItem[] =
+    variants !== undefined
+      ? Object.keys(variants).map((value) => ({
+          label: value,
+          value: value,
+        }))
+      : []
+
+  return (
+    <HStack>
+      <Text>variant</Text>
+
+      <Spacer />
+
+      <SegmentedControl
+        items={items}
+        defaultValue={defaultProps?.variant as string | undefined}
+      />
+    </HStack>
+  )
 }
