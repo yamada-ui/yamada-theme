@@ -23,7 +23,7 @@ type ComponentLayoutOptions = {}
 
 export type ComponentLayoutProps = ComponentLayoutOptions
 
-export const ComponentLayout: FC<ComponentLayoutProps> = ({}) => {
+export const ComponentLayout: FC<ComponentLayoutProps> = () => {
   return (
     <>
       <ComponentLayoutBody />
@@ -108,14 +108,7 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
         }}
       />
 
-      <HStack
-        alignItems="flex-start"
-        w="full"
-        h="100dvh"
-        maxW="full"
-        gap="0"
-        px={{ base: "lg", md: "md" }}
-      >
+      <HStack alignItems="flex-start" w="full" h="100dvh" maxW="full" gap="0">
         <Sidebar display={{ base: "flex", lg: "none" }} />
 
         <ComponentBody
