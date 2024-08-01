@@ -2,6 +2,7 @@ import {
   ComponentMultiStyle,
   ComponentStyle,
   Dict,
+  Divider,
   Editable,
   EditableInput,
   EditablePreview,
@@ -92,14 +93,18 @@ const RecursiveRow: FC<RecursiveRowProps> = ({
 export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
   if (styles === undefined) return
 
-  return Object.entries(styles).map(([key, value]) => (
-    <RecursiveRow
-      key={key}
-      name={key}
-      value={value}
-      onChangeTheme={onChangeTheme}
-    />
-  ))
+  return (
+    <VStack divider={<Divider />} gap={1}>
+      {Object.entries(styles).map(([key, value]) => (
+        <RecursiveRow
+          key={key}
+          name={key}
+          value={value}
+          onChangeTheme={onChangeTheme}
+        />
+      ))}
+    </VStack>
+  )
 }
 
 export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
@@ -108,7 +113,6 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
   onChangeTheme,
 }) => {
   const defaultProps = theme["defaultProps"]
-  //TODO: size, colorScheme
   const variants = theme["variants"]
   const sizes = theme["sizes"]
 
@@ -137,7 +141,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
       : []
 
   return (
-    <VStack>
+    <VStack divider={<Divider />} gap={1}>
       <HStack>
         <Text>variant</Text>
 
