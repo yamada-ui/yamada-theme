@@ -109,6 +109,7 @@ const ComponentLayoutBody: FC<ComponentLayoutBodyProps> = ({ ...rest }) => {
       />
 
       <HStack alignItems="flex-start" w="full" h="100dvh" maxW="full" gap="0">
+        {/* TODO: サイドバーは短くできてもよいのでは */}
         <Sidebar display={{ base: "flex", lg: "none" }} />
 
         <ComponentBody

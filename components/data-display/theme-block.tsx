@@ -2,19 +2,21 @@ import {
   ComponentMultiStyle,
   ComponentStyle,
   Dict,
-  Divider,
   Editable,
   EditableInput,
   EditablePreview,
-  HStack,
   isFunction,
   isObject,
+  NativeTable,
   RadioGroup,
   RadioItem,
-  Spacer,
-  Text,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
   UIStyle,
-  VStack,
 } from "@yamada-ui/react"
 import { FC } from "react"
 
@@ -37,7 +39,6 @@ export type DefaultPropsBlockProps = {
 }
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
-// テーブルにする？
 // TODO: RAWデータとの切り替えをできるようにする
 // TODO: 関数が入っている場合はRAWデータ固定にする。オブジェクトの表示もきれいにできるやつ作る
 const RecursiveRow: FC<RecursiveRowProps> = ({
@@ -48,48 +49,46 @@ const RecursiveRow: FC<RecursiveRowProps> = ({
 }) => {
   if (isObject(value) && !isFunction(value)) {
     return (
-      <>
-        <Text>{name}</Text>
+      <Tr>
+        <Td alignContent="center">{name}</Td>
 
-        <VStack pl="lg" gap={0}>
-          {Object.entries(value).map(([key, value]) => (
-            <RecursiveRow
-              key={key}
-              parentTree={parentTree ? [...parentTree, name] : [name]}
-              name={key}
-              value={value}
-              onChangeTheme={onChangeTheme}
-            />
-          ))}
-        </VStack>
-      </>
+        {Object.entries(value).map(([key, value]) => (
+          <RecursiveRow
+            key={key}
+            parentTree={parentTree ? [...parentTree, name] : [name]}
+            name={key}
+            value={value}
+            onChangeTheme={onChangeTheme}
+          />
+        ))}
+      </Tr>
     )
   } else {
     return (
-      <HStack key={name}>
-        <Text>{name}</Text>
+      <Tr>
+        <Td alignContent="center">{name}</Td>
 
-        <Spacer />
+        <Td>
+          <Editable
+            defaultValue={value.toString()}
+            onChange={(value) => {
+              const createObject = (parentTree: string[]): Dict =>
+                parentTree.reduceRight(
+                  (acc, key) => ({ [key]: acc }),
+                  value as unknown as Dict,
+                )
 
-        <Editable
-          defaultValue={value.toString()}
-          onChange={(value) => {
-            const createObject = (parentTree: string[]): Dict =>
-              parentTree.reduceRight(
-                (acc, key) => ({ [key]: acc }),
-                value as unknown as Dict,
+              const updatedTheme = createObject(
+                parentTree ? [...parentTree, name] : [name],
               )
-
-            const updatedTheme = createObject(
-              parentTree ? [...parentTree, name] : [name],
-            )
-            onChangeTheme(updatedTheme)
-          }}
-        >
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
-      </HStack>
+              onChangeTheme(updatedTheme)
+            }}
+          >
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        </Td>
+      </Tr>
     )
   }
 }
@@ -98,16 +97,27 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
   if (styles === undefined) return
 
   return (
-    <VStack divider={<Divider />} gap={1}>
-      {Object.entries(styles).map(([key, value]) => (
-        <RecursiveRow
-          key={key}
-          name={key}
-          value={value}
-          onChangeTheme={onChangeTheme}
-        />
-      ))}
-    </VStack>
+    <TableContainer>
+      <NativeTable>
+        <Thead>
+          <Tr>
+            <Th>style</Th>
+            <Th>value</Th>
+          </Tr>
+        </Thead>
+
+        <Tbody>
+          {Object.entries(styles).map(([key, value]) => (
+            <RecursiveRow
+              key={key}
+              name={key}
+              value={value}
+              onChangeTheme={onChangeTheme}
+            />
+          ))}
+        </Tbody>
+      </NativeTable>
+    </TableContainer>
   )
 }
 
@@ -145,45 +155,60 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
       : []
 
   return (
-    <VStack divider={<Divider />} gap={1}>
-      <HStack alignItems="flex-start" justifyContent="space-between">
-        <Text>variant</Text>
+    <TableContainer>
+      <NativeTable>
+        <Thead>
+          <Tr>
+            <Th>style</Th>
+            <Th>value</Th>
+          </Tr>
+        </Thead>
 
-        <RadioGroup
-          w="60%"
-          items={variantItems}
-          defaultValue={defaultProps?.variant as string | undefined}
-          onChange={(value) => {
-            onChangeTheme({ variant: value })
-          }}
-        />
-      </HStack>
+        <Tbody>
+          <Tr>
+            <Td>variant</Td>
 
-      <HStack alignItems="flex-start" justifyContent="space-between">
-        <Text>size</Text>
+            <Td>
+              <RadioGroup
+                w="60%"
+                items={variantItems}
+                defaultValue={defaultProps?.variant as string | undefined}
+                onChange={(value) => {
+                  onChangeTheme({ variant: value })
+                }}
+              />
+            </Td>
+          </Tr>
+          <Tr>
+            <Td>size</Td>
 
-        <RadioGroup
-          w="60%"
-          items={sizeItems}
-          defaultValue={defaultProps?.size as string | undefined}
-          onChange={(value) => {
-            onChangeTheme({ size: value })
-          }}
-        />
-      </HStack>
+            <Td>
+              <RadioGroup
+                w="60%"
+                items={sizeItems}
+                defaultValue={defaultProps?.size as string | undefined}
+                onChange={(value) => {
+                  onChangeTheme({ size: value })
+                }}
+              />
+            </Td>
+          </Tr>
+          <Tr>
+            <Td>colorScheme</Td>
 
-      <HStack alignItems="flex-start" justifyContent="space-between">
-        <Text>colorScheme</Text>
-
-        <RadioGroup
-          w="60%"
-          items={colorSchemeItems}
-          defaultValue={defaultProps?.colorScheme as string | undefined}
-          onChange={(value) => {
-            onChangeTheme({ colorScheme: value })
-          }}
-        />
-      </HStack>
-    </VStack>
+            <Td>
+              <RadioGroup
+                w="60%"
+                items={colorSchemeItems}
+                defaultValue={defaultProps?.colorScheme as string | undefined}
+                onChange={(value) => {
+                  onChangeTheme({ colorScheme: value })
+                }}
+              />
+            </Td>
+          </Tr>
+        </Tbody>
+      </NativeTable>
+    </TableContainer>
   )
 }
