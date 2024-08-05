@@ -18,7 +18,7 @@ pre-commit:
       priority: 3
       glob: "*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,d.ts}"
       run: |
-        pnpm eslint {staged_files} --max-warnings=0 --fix
+        pnpm eslint {staged_files} --max-warnings=0 --fix --cache
       stage_fixed: true
 
 commit-msg:
