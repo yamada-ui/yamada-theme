@@ -55,6 +55,7 @@ export const ComponentThemePreview = memo(
 
       // TODO: multiかどうかはtypeを見ればよさそう
       // TODO: テーマをグローバルで保管するかどうするかとか考える
+      // TODO: 継承をどうするか考える
       const [theme, setTheme] = useState(
         defaultTheme.components[name as keyof typeof defaultTheme.components],
       )

@@ -1,7 +1,6 @@
 import {
   Compass,
   ExternalLink,
-  GitPullRequestArrow,
   Layers,
   LayoutTemplate,
   ChartLineIcon,
@@ -9,9 +8,9 @@ import {
   Paintbrush,
   PanelsTopLeft,
   Table,
-  Tags,
   TextCursorInput,
   Text as TextIcon,
+  Component as ComponentIcon,
 } from "@yamada-ui/lucide"
 import {
   Center,
@@ -273,17 +272,14 @@ const ListItemIcon: FC<ListItemIconProps> = memo(({ icon, ...rest }) => {
     case "text":
       return <TextIcon fontSize="2xl" {...rest} />
 
-    case "tags":
-      return <Tags fontSize="2xl" {...rest} />
-
-    case "git-pull-request-arrow":
-      return <GitPullRequestArrow fontSize="2xl" {...rest} />
-
     case "yamada-ui":
       return <YamadaUI fontSize="2xl" {...rest} />
 
     case "paintbrush":
       return <Paintbrush fontSize="2xl" {...rest} />
+
+    case "component":
+      return <ComponentIcon fontSize="2xl" {...rest} />
 
     default:
       return <></>

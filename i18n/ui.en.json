@@ -17,10 +17,9 @@
     },
     "tree": {
       "home": "Home",
-      "request": "Request component",
-      "create": "Create component",
       "yamada-ui": "Yamada UI",
-      "yamada-colors": "Colors generator"
+      "yamada-colors": "Colors generator",
+      "yamada-components": "Components"
     },
     "component-preview": {
       "label": "Editable example",

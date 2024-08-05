@@ -1,23 +1,5 @@
 export const MENU = [
   {
-    icon: "tags",
-    name: "request",
-    href: {
-      en: "https://github.com/yamada-ui/yamada-theme/issues/new?labels=enhancement&projects=&template=feature_request.yml",
-      ja: "https://github.com/yamada-ui/yamada-theme/issues/new?labels=enhancement&projects=&template=feature_request.ja.yml",
-    },
-    isExternal: true,
-  },
-  {
-    icon: "git-pull-request-arrow",
-    name: "create",
-    href: {
-      en: "https://github.com/yamada-ui/yamada-theme/blob/main/CONTRIBUTING.md",
-      ja: "https://github.com/yamada-ui/yamada-theme/blob/main/CONTRIBUTING.ja.md",
-    },
-    isExternal: true,
-  },
-  {
     icon: "yamada-ui",
     name: "yamada-ui",
     href: { en: "https://yamada-ui.com", ja: "https://yamada-ui.com/ja" },
@@ -29,6 +11,15 @@ export const MENU = [
     href: {
       en: "https://yamada-colors.app",
       ja: "https://yamada-colors.app/ja",
+    },
+    isExternal: true,
+  },
+  {
+    icon: "component",
+    name: "yamada-components",
+    href: {
+      en: "https://yamada-components.app",
+      ja: "https://yamada-components.app/ja",
     },
     isExternal: true,
   },
