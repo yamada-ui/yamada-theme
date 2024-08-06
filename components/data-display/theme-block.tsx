@@ -27,6 +27,7 @@ import {
   isArray,
   Button,
   Textarea,
+  isFunction,
 } from "@yamada-ui/react"
 import { FC } from "react"
 
@@ -49,7 +50,6 @@ export type DefaultPropsBlockProps = {
 }
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
-// TODO: 関数が入っている場合はRAWデータ固定にする。
 // TODO: 変更の反映
 type RecursiveObjectItemProps = {
   name: string
@@ -115,16 +115,22 @@ const TableRow: FC<RecursiveRowProps> = ({
   const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
   const [isRaw, { toggle: toggleRaw }] = useBoolean(false)
 
+  const isFunc = isFunction(value)
+  const isObj = isObject(value)
+
   return (
     <Tr>
       <Td onClick={() => toggleCollapse()}>{name}</Td>
+
       <Td>
-        {isObject(value) ? (
+        {isObj || isFunc ? (
           <HStack alignItems="flex-start" justifyContent="space-between">
-            {isRaw ? (
+            {isRaw || isFunc ? (
               <Textarea
                 autosize
-                defaultValue={JSON.stringify(value, null, 4)}
+                defaultValue={
+                  isFunc ? value.toString() : JSON.stringify(value, null, 4)
+                }
               />
             ) : (
               <VStack gap={0}>
@@ -145,7 +151,7 @@ const TableRow: FC<RecursiveRowProps> = ({
             <Button
               variant="text"
               size="xs"
-              leftIcon={isRaw ? <EyeOff /> : <Eye />}
+              leftIcon={isRaw || isFunc ? <EyeOff /> : <Eye />}
               onClick={() => toggleRaw()}
             >
               Raw
