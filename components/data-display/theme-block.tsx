@@ -1,4 +1,4 @@
-import { Eye } from "@yamada-ui/lucide"
+import { Eye, EyeOff } from "@yamada-ui/lucide"
 import {
   ComponentMultiStyle,
   ComponentStyle,
@@ -49,8 +49,8 @@ export type DefaultPropsBlockProps = {
 }
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
-// TODO: RAWデータとの切り替えをできるようにする
-// TODO: 関数が入っている場合はRAWデータ固定にする。オブジェクトの表示もきれいにできるやつ作る
+// TODO: 関数が入っている場合はRAWデータ固定にする。
+// TODO: 変更の反映
 type RecursiveObjectItemProps = {
   name: string
   value: any
@@ -120,10 +120,12 @@ const TableRow: FC<RecursiveRowProps> = ({
       <Td onClick={() => toggleCollapse()}>{name}</Td>
       <Td>
         {isObject(value) ? (
-          // MEMO: rawデータとのきりかえはここか？
           <HStack alignItems="flex-start" justifyContent="space-between">
             {isRaw ? (
-              <Textarea autosize defaultValue={JSON.stringify(value)} />
+              <Textarea
+                autosize
+                defaultValue={JSON.stringify(value, null, 4)}
+              />
             ) : (
               <VStack gap={0}>
                 <Text>{`{`}</Text>
@@ -143,7 +145,7 @@ const TableRow: FC<RecursiveRowProps> = ({
             <Button
               variant="text"
               size="xs"
-              leftIcon={<Eye />}
+              leftIcon={isRaw ? <EyeOff /> : <Eye />}
               onClick={() => toggleRaw()}
             >
               Raw
