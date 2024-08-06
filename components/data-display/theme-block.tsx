@@ -20,6 +20,7 @@ import {
   UIStyle,
   Text,
   VStack,
+  HStack,
 } from "@yamada-ui/react"
 import { FC } from "react"
 
@@ -45,52 +46,50 @@ export type DefaultPropsBlockProps = {
 // TODO: RAWデータとの切り替えをできるようにする
 // TODO: 関数が入っている場合はRAWデータ固定にする。オブジェクトの表示もきれいにできるやつ作る
 type RecursiveObjectProps = {
+  name: string
   value: any
-  isNested?: boolean
 }
 
-const RecursiveObject: FC<RecursiveObjectProps> = ({
-  value,
-  isNested = true,
-}) => {
-  if (isObject(value)) {
-    return (
-      <List ml={isNested ? "md" : "none"} gap={0}>
-        {Object.entries(value).map(([key, value]) => (
-          <ListItem key={key}>
-            <VStack gap={0}>
-              <Text>{`${key} : {`}</Text>
-              <RecursiveObject value={value} />
-              <Text>{`}`}</Text>
-            </VStack>
-          </ListItem>
-        ))}
-      </List>
-    )
-  } else {
-    return (
-      <Editable
-        ml={isNested ? "md" : "none"}
-        size="sm"
-        defaultValue={value.toString()}
-        // onChange={(value) => {
-        //   const createObject = (parentTree: string[]): Dict =>
-        //     parentTree.reduceRight(
-        //       (acc, key) => ({ [key]: acc }),
-        //       value as unknown as Dict,
-        //     )
+const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
+  return (
+    <ListItem>
+      {isObject(value) ? (
+        <VStack gap={0}>
+          <Text>{`${name} : {`}</Text>
+          <List ml="md" gap={0}>
+            {Object.entries(value).map(([key, value]) => (
+              <RecursiveObject key={key} name={key} value={value} />
+            ))}
+          </List>
+          <Text>{`}`}</Text>
+        </VStack>
+      ) : (
+        <HStack gap={0}>
+          <Text>{`${name} : `}</Text>
+          <Editable
+            width="3xs"
+            ml="sm"
+            defaultValue={value.toString()}
+            // onChange={(value) => {
+            //   const createObject = (parentTree: string[]): Dict =>
+            //     parentTree.reduceRight(
+            //       (acc, key) => ({ [key]: acc }),
+            //       value as unknown as Dict,
+            //     )
 
-        //   const updatedTheme = createObject(
-        //     parentTree ? [...parentTree, name] : [name],
-        //   )
-        //   onChangeTheme(updatedTheme)
-        // }}
-      >
-        <EditablePreview />
-        <EditableInput />
-      </Editable>
-    )
-  }
+            //   const updatedTheme = createObject(
+            //     parentTree ? [...parentTree, name] : [name],
+            //   )
+            //   onChangeTheme(updatedTheme)
+            // }}
+          >
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        </HStack>
+      )}
+    </ListItem>
+  )
 }
 
 const StyleTable: FC<RecursiveRowProps> = ({
@@ -103,56 +102,27 @@ const StyleTable: FC<RecursiveRowProps> = ({
     <Tr>
       <Td>{name}</Td>
       <Td>
-        <RecursiveObject value={value} isNested={false} />
+        {isObject(value) ? (
+          <VStack gap={0}>
+            <Text>{`{`}</Text>
+
+            <List ml="md" gap={0}>
+              {Object.entries(value).map(([key, value]) => (
+                <RecursiveObject key={key} name={key} value={value} />
+              ))}
+            </List>
+
+            <Text>{`}`}</Text>
+          </VStack>
+        ) : (
+          <Editable width="3xs" defaultValue={value.toString()}>
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        )}
       </Td>
     </Tr>
   )
-
-  //TODO: remove this
-  // if (isObject(value) && !isFunction(value)) {
-  //   return (
-  //     <Tr>
-  //       <Td alignContent="center">{name}</Td>
-
-  //       {Object.entries(value).map(([key, value]) => (
-  //         <StyleTable
-  //           key={key}
-  //           parentTree={parentTree ? [...parentTree, name] : [name]}
-  //           name={key}
-  //           value={value}
-  //           onChangeTheme={onChangeTheme}
-  //         />
-  //       ))}
-  //     </Tr>
-  //   )
-  // } else {
-  //   return (
-  //     <Tr>
-  //       <Td alignContent="center">{name}</Td>
-
-  //       <Td>
-  //         <Editable
-  //           defaultValue={value.toString()}
-  //           onChange={(value) => {
-  //             const createObject = (parentTree: string[]): Dict =>
-  //               parentTree.reduceRight(
-  //                 (acc, key) => ({ [key]: acc }),
-  //                 value as unknown as Dict,
-  //               )
-
-  //             const updatedTheme = createObject(
-  //               parentTree ? [...parentTree, name] : [name],
-  //             )
-  //             onChangeTheme(updatedTheme)
-  //           }}
-  //         >
-  //           <EditablePreview />
-  //           <EditableInput />
-  //         </Editable>
-  //       </Td>
-  //     </Tr>
-  //   )
-  // }
 }
 
 export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
