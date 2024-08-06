@@ -21,6 +21,9 @@ import {
   Text,
   VStack,
   HStack,
+  useBoolean,
+  Collapse,
+  isArray,
 } from "@yamada-ui/react"
 import { FC } from "react"
 
@@ -51,16 +54,22 @@ type RecursiveObjectProps = {
 }
 
 const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
+  const [isOpen, { toggle }] = useBoolean(true)
+
   return (
     <ListItem>
       {isObject(value) ? (
         <VStack gap={0}>
-          <Text>{`${name} : {`}</Text>
-          <List ml="md" gap={0}>
-            {Object.entries(value).map(([key, value]) => (
-              <RecursiveObject key={key} name={key} value={value} />
-            ))}
-          </List>
+          <Text onClick={() => toggle()}>{`${name} : {`}</Text>
+
+          <Collapse isOpen={isOpen} unmountOnExit>
+            <List ml="md" gap={0}>
+              {Object.entries(value).map(([key, value]) => (
+                <RecursiveObject key={key} name={key} value={value} />
+              ))}
+            </List>
+          </Collapse>
+
           <Text>{`}`}</Text>
         </VStack>
       ) : (
@@ -69,7 +78,10 @@ const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
           <Editable
             width="3xs"
             ml="sm"
-            defaultValue={value.toString()}
+            // TODO: リストとかだった場合にどう表示するか考える
+            defaultValue={
+              isArray(value) ? `[ ${value.toString()} ]` : value.toString()
+            }
             // onChange={(value) => {
             //   const createObject = (parentTree: string[]): Dict =>
             //     parentTree.reduceRight(
@@ -92,25 +104,29 @@ const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
   )
 }
 
-const StyleTable: FC<RecursiveRowProps> = ({
+const TableRow: FC<RecursiveRowProps> = ({
   name,
   value,
   // parentTree,
   // onChangeTheme,
 }) => {
+  const [isOpen, { toggle }] = useBoolean(true)
+
   return (
     <Tr>
-      <Td>{name}</Td>
+      <Td onClick={() => toggle()}>{name}</Td>
       <Td>
         {isObject(value) ? (
           <VStack gap={0}>
             <Text>{`{`}</Text>
 
-            <List ml="md" gap={0}>
-              {Object.entries(value).map(([key, value]) => (
-                <RecursiveObject key={key} name={key} value={value} />
-              ))}
-            </List>
+            <Collapse isOpen={isOpen} unmountOnExit>
+              <List ml="md" gap={0}>
+                {Object.entries(value).map(([key, value]) => (
+                  <RecursiveObject key={key} name={key} value={value} />
+                ))}
+              </List>
+            </Collapse>
 
             <Text>{`}`}</Text>
           </VStack>
@@ -140,7 +156,7 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
 
         <Tbody>
           {Object.entries(styles).map(([key, value]) => (
-            <StyleTable
+            <TableRow
               key={key}
               name={key}
               value={value}
