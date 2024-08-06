@@ -1,3 +1,4 @@
+import { Eye } from "@yamada-ui/lucide"
 import {
   ComponentMultiStyle,
   ComponentStyle,
@@ -24,6 +25,8 @@ import {
   useBoolean,
   Collapse,
   isArray,
+  Button,
+  Textarea,
 } from "@yamada-ui/react"
 import { FC } from "react"
 
@@ -48,12 +51,12 @@ export type DefaultPropsBlockProps = {
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 // TODO: RAWデータとの切り替えをできるようにする
 // TODO: 関数が入っている場合はRAWデータ固定にする。オブジェクトの表示もきれいにできるやつ作る
-type RecursiveObjectProps = {
+type RecursiveObjectItemProps = {
   name: string
   value: any
 }
 
-const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
+const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({ name, value }) => {
   const [isOpen, { toggle }] = useBoolean(true)
 
   return (
@@ -65,7 +68,7 @@ const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
           <Collapse isOpen={isOpen} unmountOnExit>
             <List ml="md" gap={0}>
               {Object.entries(value).map(([key, value]) => (
-                <RecursiveObject key={key} name={key} value={value} />
+                <RecursiveObjectItem key={key} name={key} value={value} />
               ))}
             </List>
           </Collapse>
@@ -78,7 +81,6 @@ const RecursiveObject: FC<RecursiveObjectProps> = ({ name, value }) => {
           <Editable
             width="3xs"
             ml="sm"
-            // TODO: リストとかだった場合にどう表示するか考える
             defaultValue={
               isArray(value) ? `[ ${value.toString()} ]` : value.toString()
             }
@@ -110,26 +112,43 @@ const TableRow: FC<RecursiveRowProps> = ({
   // parentTree,
   // onChangeTheme,
 }) => {
-  const [isOpen, { toggle }] = useBoolean(true)
+  const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
+  const [isRaw, { toggle: toggleRaw }] = useBoolean(false)
 
   return (
     <Tr>
-      <Td onClick={() => toggle()}>{name}</Td>
+      <Td onClick={() => toggleCollapse()}>{name}</Td>
       <Td>
         {isObject(value) ? (
-          <VStack gap={0}>
-            <Text>{`{`}</Text>
+          // MEMO: rawデータとのきりかえはここか？
+          <HStack alignItems="flex-start" justifyContent="space-between">
+            {isRaw ? (
+              <Textarea autosize defaultValue={JSON.stringify(value)} />
+            ) : (
+              <VStack gap={0}>
+                <Text>{`{`}</Text>
 
-            <Collapse isOpen={isOpen} unmountOnExit>
-              <List ml="md" gap={0}>
-                {Object.entries(value).map(([key, value]) => (
-                  <RecursiveObject key={key} name={key} value={value} />
-                ))}
-              </List>
-            </Collapse>
+                <Collapse isOpen={isOpenCollapse} unmountOnExit>
+                  <List ml="md" gap={0}>
+                    {Object.entries(value).map(([key, value]) => (
+                      <RecursiveObjectItem key={key} name={key} value={value} />
+                    ))}
+                  </List>
+                </Collapse>
 
-            <Text>{`}`}</Text>
-          </VStack>
+                <Text>{`}`}</Text>
+              </VStack>
+            )}
+
+            <Button
+              variant="text"
+              size="xs"
+              leftIcon={<Eye />}
+              onClick={() => toggleRaw()}
+            >
+              Raw
+            </Button>
+          </HStack>
         ) : (
           <Editable width="3xs" defaultValue={value.toString()}>
             <EditablePreview />
