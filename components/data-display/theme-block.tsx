@@ -31,32 +31,21 @@ import {
 } from "@yamada-ui/react"
 import { FC } from "react"
 
-type RecursiveRowProps = {
-  parentTree?: string[]
-  onChangeTheme: (theme: Dict) => void
-  name: string
-  value: any
-}
-
-export type ThemeBlockProps = {
-  styles?: UIStyle
-  onChangeTheme: (theme: Dict) => void
-}
-
-export type DefaultPropsBlockProps = {
-  theme: ComponentStyle | ComponentMultiStyle
-  colorSchemes: string[]
-  onChangeTheme: (theme: Dict) => void
-}
-
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
-// TODO: 変更の反映
+// TODO: 項目の追加機能
 type RecursiveObjectItemProps = {
   name: string
   value: any
+  parentTree: string[]
+  onChangeTheme: (theme: Dict) => void
 }
 
-const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({ name, value }) => {
+const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
+  name,
+  value,
+  parentTree,
+  onChangeTheme,
+}) => {
   const [isOpen, { toggle }] = useBoolean(true)
 
   return (
@@ -68,7 +57,13 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({ name, value }) => {
           <Collapse isOpen={isOpen} unmountOnExit>
             <List ml="md" gap={0}>
               {Object.entries(value).map(([key, value]) => (
-                <RecursiveObjectItem key={key} name={key} value={value} />
+                <RecursiveObjectItem
+                  key={key}
+                  name={key}
+                  value={value}
+                  parentTree={parentTree ? [...parentTree, key] : [key]}
+                  onChangeTheme={onChangeTheme}
+                />
               ))}
             </List>
           </Collapse>
@@ -84,18 +79,18 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({ name, value }) => {
             defaultValue={
               isArray(value) ? `[ ${value.toString()} ]` : value.toString()
             }
-            // onChange={(value) => {
-            //   const createObject = (parentTree: string[]): Dict =>
-            //     parentTree.reduceRight(
-            //       (acc, key) => ({ [key]: acc }),
-            //       value as unknown as Dict,
-            //     )
+            // TODO: Listだった場合の変更の反映機能
+            onChange={(value) => {
+              const createObject = (parentTree: string[]): Dict =>
+                parentTree.reduceRight(
+                  (acc, key) => ({ [key]: acc }),
+                  value as unknown as Dict,
+                )
 
-            //   const updatedTheme = createObject(
-            //     parentTree ? [...parentTree, name] : [name],
-            //   )
-            //   onChangeTheme(updatedTheme)
-            // }}
+              const updatedTheme = createObject(parentTree)
+
+              onChangeTheme(updatedTheme)
+            }}
           >
             <EditablePreview />
             <EditableInput />
@@ -106,12 +101,13 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({ name, value }) => {
   )
 }
 
-const TableRow: FC<RecursiveRowProps> = ({
-  name,
-  value,
-  // parentTree,
-  // onChangeTheme,
-}) => {
+type TableRowProps = {
+  onChangeTheme: (theme: Dict) => void
+  name: string
+  value: any
+}
+
+const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
   const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
   const [isRaw, { toggle: toggleRaw }] = useBoolean(false)
 
@@ -131,6 +127,13 @@ const TableRow: FC<RecursiveRowProps> = ({
                 defaultValue={
                   isFunc ? value.toString() : JSON.stringify(value, null, 4)
                 }
+                onChange={(value) => {
+                  try {
+                    onChangeTheme({ [name]: JSON.parse(value.target.value) })
+                  } catch (error) {
+                    // TODO: parseのエラー処理
+                  }
+                }}
               />
             ) : (
               <VStack gap={0}>
@@ -139,7 +142,13 @@ const TableRow: FC<RecursiveRowProps> = ({
                 <Collapse isOpen={isOpenCollapse} unmountOnExit>
                   <List ml="md" gap={0}>
                     {Object.entries(value).map(([key, value]) => (
-                      <RecursiveObjectItem key={key} name={key} value={value} />
+                      <RecursiveObjectItem
+                        key={key}
+                        name={key}
+                        value={value}
+                        parentTree={[name, key]}
+                        onChangeTheme={onChangeTheme}
+                      />
                     ))}
                   </List>
                 </Collapse>
@@ -158,7 +167,14 @@ const TableRow: FC<RecursiveRowProps> = ({
             </Button>
           </HStack>
         ) : (
-          <Editable width="3xs" defaultValue={value.toString()}>
+          // TODO: Listだった場合の変更の反映機能
+          <Editable
+            width="3xs"
+            defaultValue={value.toString()}
+            onChange={(value) => {
+              onChangeTheme({ [name]: value })
+            }}
+          >
             <EditablePreview />
             <EditableInput />
           </Editable>
@@ -166,6 +182,11 @@ const TableRow: FC<RecursiveRowProps> = ({
       </Td>
     </Tr>
   )
+}
+
+export type ThemeBlockProps = {
+  styles?: UIStyle
+  onChangeTheme: (theme: Dict) => void
 }
 
 export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
@@ -194,6 +215,12 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
       </NativeTable>
     </TableContainer>
   )
+}
+
+export type DefaultPropsBlockProps = {
+  theme: ComponentStyle | ComponentMultiStyle
+  colorSchemes: string[]
+  onChangeTheme: (theme: Dict) => void
 }
 
 export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
