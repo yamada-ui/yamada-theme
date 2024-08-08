@@ -53,9 +53,9 @@ export const ComponentThemePreview = memo(
         defaultTheme.semantics.colorSchemes ?? {},
       )
 
-      // TODO: multiかどうかはtypeを見ればよさそう
+      // TODO: multiかどうかで表示も切り替える必要があるか
       // TODO: テーマをグローバルで保管するかどうするかとか考える
-      // TODO: 継承をどうするか考える
+      // TODO: 継承もできるようにするか考える
       const [theme, setTheme] = useState(
         defaultTheme.components[name as keyof typeof defaultTheme.components],
       )
@@ -147,7 +147,8 @@ export const ComponentThemePreview = memo(
                 </TabPanel>
               )
             } else {
-              const styles = theme[key as keyof ComponentStyle]
+              const styles =
+                theme[key as keyof (ComponentStyle | ComponentMultiStyle)]
 
               return (
                 <TabPanel key={key}>

@@ -174,7 +174,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                 try {
                   onChangeTheme([name], JSON.parse(value.target.value))
                 } catch (error) {
-                  // TODO: parseのエラー処理
+                  // TODO: parseのエラー処理。React Hook Form使う？
                 }
               }}
             />
@@ -238,8 +238,8 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
       <NativeTable>
         <Thead>
           <Tr>
-            <Th>style</Th>
-            <Th>value</Th>
+            <Th>name</Th>
+            <Th>control</Th>
           </Tr>
         </Thead>
 
@@ -302,8 +302,8 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
       <NativeTable>
         <Thead>
           <Tr>
-            <Th>style</Th>
-            <Th>value</Th>
+            <Th>name</Th>
+            <Th>control</Th>
           </Tr>
         </Thead>
 
