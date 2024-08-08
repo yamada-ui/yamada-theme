@@ -32,11 +32,73 @@ import { FC } from "react"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 // TODO: 項目の追加機能
+type OnChangeTheme = (keyTree: string[], value: any) => void
+
+type EditableFieldProps = {
+  value: any
+  keyTree: string[]
+  onChangeTheme: OnChangeTheme
+}
+
+const EditableField: FC<EditableFieldProps> = ({
+  value,
+  keyTree,
+  onChangeTheme,
+}) => {
+  if (isArray(value)) {
+    return (
+      <HStack gap="sm">
+        <Text>[</Text>
+
+        <Editable
+          width="5xs"
+          textAlign="center"
+          defaultValue={value[0]}
+          onChange={(valueProp) =>
+            onChangeTheme(keyTree, [valueProp, value[1]])
+          }
+        >
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+
+        <Text>:</Text>
+
+        <Editable
+          width="5xs"
+          textAlign="center"
+          defaultValue={value[1]}
+          onChange={(valueProp) =>
+            onChangeTheme(keyTree, [value[0], valueProp])
+          }
+        >
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+
+        <Text>]</Text>
+      </HStack>
+    )
+  } else {
+    return (
+      <Editable
+        width="3xs"
+        ml="sm"
+        defaultValue={value.toString()}
+        onChange={(value) => onChangeTheme(keyTree, value)}
+      >
+        <EditablePreview />
+        <EditableInput />
+      </Editable>
+    )
+  }
+}
+
 type RecursiveObjectItemProps = {
   name: string
   value: any
   keyTree: string[]
-  onChangeTheme: (keyTree: string[], value: any) => void
+  onChangeTheme: OnChangeTheme
 }
 
 const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
@@ -54,7 +116,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
           <Text onClick={() => toggle()}>{`${name} : {`}</Text>
 
           <Collapse isOpen={isOpen} unmountOnExit>
-            <List ml="md" gap={0}>
+            <List pl="md" gap={0} borderLeftWidth="1px">
               {Object.entries(value).map(([key, value]) => (
                 <RecursiveObjectItem
                   key={key}
@@ -72,18 +134,12 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
       ) : (
         <HStack gap={0}>
           <Text>{`${name} : `}</Text>
-          <Editable
-            width="3xs"
-            ml="sm"
-            defaultValue={
-              isArray(value) ? `[ ${value.toString()} ]` : value.toString()
-            }
-            // TODO: Listだった場合の変更の反映機能
-            onChange={(value) => onChangeTheme(keyTree, value)}
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
+
+          <EditableField
+            value={value}
+            keyTree={keyTree}
+            onChangeTheme={onChangeTheme}
+          />
         </HStack>
       )}
     </ListItem>
@@ -91,9 +147,9 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
 }
 
 type TableRowProps = {
-  onChangeTheme: (keyTree: string[], value: any) => void
   name: string
   value: any
+  onChangeTheme: OnChangeTheme
 }
 
 const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
@@ -129,7 +185,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                 <Text>{`{`}</Text>
 
                 <Collapse isOpen={isOpenCollapse} unmountOnExit>
-                  <List ml="md" gap={0}>
+                  <List pl="md" gap={0} borderLeftWidth="1px">
                     {Object.entries(value).map(([key, value]) => (
                       <RecursiveObjectItem
                         key={key}
@@ -156,17 +212,11 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
             </Button>
           </HStack>
         ) : (
-          // TODO: Listだった場合の変更の反映機能
-          <Editable
-            width="3xs"
-            defaultValue={value.toString()}
-            onChange={(value) => {
-              onChangeTheme([name], value)
-            }}
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
+          <EditableField
+            value={value}
+            keyTree={[name]}
+            onChangeTheme={onChangeTheme}
+          />
         )}
       </Td>
     </Tr>
@@ -175,7 +225,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
 
 export type ThemeBlockProps = {
   styles?: UIStyle
-  onChangeTheme: (keyTree: string[], value: any) => void
+  onChangeTheme: OnChangeTheme
 }
 
 export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
@@ -209,7 +259,7 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
 export type DefaultPropsBlockProps = {
   theme: ComponentStyle | ComponentMultiStyle
   colorSchemes: string[]
-  onChangeTheme: (keyTree: string[], value: any) => void
+  onChangeTheme: OnChangeTheme
 }
 
 export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
