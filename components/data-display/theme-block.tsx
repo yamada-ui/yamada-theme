@@ -2,7 +2,6 @@ import { Eye, EyeOff } from "@yamada-ui/lucide"
 import {
   ComponentMultiStyle,
   ComponentStyle,
-  Dict,
   Editable,
   EditableInput,
   EditablePreview,
@@ -36,14 +35,14 @@ import { FC } from "react"
 type RecursiveObjectItemProps = {
   name: string
   value: any
-  parentTree: string[]
-  onChangeTheme: (theme: Dict) => void
+  keyTree: string[]
+  onChangeTheme: (keyTree: string[], value: any) => void
 }
 
 const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
   name,
   value,
-  parentTree,
+  keyTree,
   onChangeTheme,
 }) => {
   const [isOpen, { toggle }] = useBoolean(true)
@@ -61,7 +60,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
                   key={key}
                   name={key}
                   value={value}
-                  parentTree={parentTree ? [...parentTree, key] : [key]}
+                  keyTree={keyTree ? [...keyTree, key] : [key]}
                   onChangeTheme={onChangeTheme}
                 />
               ))}
@@ -80,17 +79,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
               isArray(value) ? `[ ${value.toString()} ]` : value.toString()
             }
             // TODO: Listだった場合の変更の反映機能
-            onChange={(value) => {
-              const createObject = (parentTree: string[]): Dict =>
-                parentTree.reduceRight(
-                  (acc, key) => ({ [key]: acc }),
-                  value as unknown as Dict,
-                )
-
-              const updatedTheme = createObject(parentTree)
-
-              onChangeTheme(updatedTheme)
-            }}
+            onChange={(value) => onChangeTheme(keyTree, value)}
           >
             <EditablePreview />
             <EditableInput />
@@ -102,7 +91,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
 }
 
 type TableRowProps = {
-  onChangeTheme: (theme: Dict) => void
+  onChangeTheme: (keyTree: string[], value: any) => void
   name: string
   value: any
 }
@@ -129,7 +118,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                 }
                 onChange={(value) => {
                   try {
-                    onChangeTheme({ [name]: JSON.parse(value.target.value) })
+                    onChangeTheme([name], JSON.parse(value.target.value))
                   } catch (error) {
                     // TODO: parseのエラー処理
                   }
@@ -146,7 +135,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                         key={key}
                         name={key}
                         value={value}
-                        parentTree={[name, key]}
+                        keyTree={[name, key]}
                         onChangeTheme={onChangeTheme}
                       />
                     ))}
@@ -172,7 +161,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
             width="3xs"
             defaultValue={value.toString()}
             onChange={(value) => {
-              onChangeTheme({ [name]: value })
+              onChangeTheme([name], value)
             }}
           >
             <EditablePreview />
@@ -186,7 +175,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
 
 export type ThemeBlockProps = {
   styles?: UIStyle
-  onChangeTheme: (theme: Dict) => void
+  onChangeTheme: (keyTree: string[], value: any) => void
 }
 
 export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
@@ -220,7 +209,7 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
 export type DefaultPropsBlockProps = {
   theme: ComponentStyle | ComponentMultiStyle
   colorSchemes: string[]
-  onChangeTheme: (theme: Dict) => void
+  onChangeTheme: (keyTree: string[], value: any) => void
 }
 
 export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
@@ -276,7 +265,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
                 items={variantItems}
                 defaultValue={defaultProps?.variant as string | undefined}
                 onChange={(value) => {
-                  onChangeTheme({ variant: value })
+                  onChangeTheme(["variant"], value)
                 }}
               />
             </Td>
@@ -290,7 +279,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
                 items={sizeItems}
                 defaultValue={defaultProps?.size as string | undefined}
                 onChange={(value) => {
-                  onChangeTheme({ size: value })
+                  onChangeTheme(["size"], value)
                 }}
               />
             </Td>
@@ -304,7 +293,7 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
                 items={colorSchemeItems}
                 defaultValue={defaultProps?.colorScheme as string | undefined}
                 onChange={(value) => {
-                  onChangeTheme({ colorScheme: value })
+                  onChangeTheme(["colorScheme"], value)
                 }}
               />
             </Td>

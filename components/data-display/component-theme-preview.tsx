@@ -60,14 +60,19 @@ export const ComponentThemePreview = memo(
         defaultTheme.components[name as keyof typeof defaultTheme.components],
       )
 
-      const onChangeTheme = (key: string) => (prop: Dict) => {
-        const newTheme = merge(theme, {
-          [key]: prop,
-        })
+      const onChangeTheme =
+        (key: string) => (keyTree: string[], value: any) => {
+          const newTheme = merge(
+            theme,
+            [key, ...keyTree].reduceRight(
+              (acc, key) => ({ [key]: acc }),
+              value as unknown as Dict,
+            ),
+          )
 
-        setTheme(newTheme)
-        onChangeThemeProp?.(newTheme)
-      }
+          setTheme(newTheme)
+          onChangeThemeProp?.(newTheme)
+        }
 
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>
