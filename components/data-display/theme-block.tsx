@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from "@yamada-ui/lucide"
+import { Eye, EyeOff, Plus } from "@yamada-ui/lucide"
 import {
   ComponentMultiStyle,
   ComponentStyle,
@@ -27,8 +27,13 @@ import {
   Button,
   Textarea,
   isFunction,
+  FormControl,
+  Input,
+  Tfoot,
+  IconButton,
 } from "@yamada-ui/react"
 import { FC } from "react"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 // TODO: 項目の追加機能
@@ -230,7 +235,36 @@ export type ThemeBlockProps = {
   onChangeTheme: OnChangeTheme
 }
 
+type TableItem = {
+  name: string
+  control: string
+}
+
 export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
+  const { control, handleSubmit, reset } = useForm<TableItem>({
+    defaultValues: {
+      name: "",
+      control: "",
+    },
+  })
+
+  //TODO: 入れれるスタイルとか制限したい。
+  const validationRules = {
+    name: {
+      required: true,
+    },
+    control: {
+      required: true,
+    },
+  }
+
+  const onSubmit: SubmitHandler<TableItem> = ({ name, control }: TableItem) => {
+    console.log("submit")
+    onChangeTheme([], { [name]: control })
+
+    reset()
+  }
+
   if (styles === undefined) return
 
   return (
@@ -253,6 +287,43 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
             />
           ))}
         </Tbody>
+
+        <Tfoot>
+          <Tr>
+            <Th>
+              <Controller
+                name="name"
+                control={control}
+                rules={validationRules.name}
+                render={({ field, fieldState }) => (
+                  <FormControl isInvalid={fieldState.invalid}>
+                    <Input {...field} id="name" placeholder="name" />
+                  </FormControl>
+                )}
+              />
+            </Th>
+            <Th>
+              <HStack>
+                <Controller
+                  name="control"
+                  control={control}
+                  rules={validationRules.control}
+                  render={({ field, fieldState }) => (
+                    <FormControl isInvalid={fieldState.invalid}>
+                      <Input {...field} id="control" placeholder="control" />
+                    </FormControl>
+                  )}
+                />
+
+                <IconButton
+                  variant="ghost"
+                  icon={<Plus />}
+                  onClick={handleSubmit(onSubmit)}
+                />
+              </HStack>
+            </Th>
+          </Tr>
+        </Tfoot>
       </NativeTable>
     </TableContainer>
   )
