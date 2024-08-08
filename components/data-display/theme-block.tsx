@@ -83,7 +83,6 @@ const EditableField: FC<EditableFieldProps> = ({
     return (
       <Editable
         width="3xs"
-        ml="sm"
         defaultValue={value.toString()}
         onChange={(value) => onChangeTheme(keyTree, value)}
       >
@@ -164,60 +163,63 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
       <Td onClick={() => toggleCollapse()}>{name}</Td>
 
       <Td>
-        {isObj || isFunc ? (
-          <HStack alignItems="flex-start" justifyContent="space-between">
-            {isRaw || isFunc ? (
-              <Textarea
-                autosize
-                defaultValue={
-                  isFunc ? value.toString() : JSON.stringify(value, null, 4)
+        <HStack alignItems="flex-start" justifyContent="space-between">
+          {isRaw || isFunc ? (
+            <Textarea
+              autosize
+              defaultValue={
+                isFunc ? value.toString() : JSON.stringify(value, null, 4)
+              }
+              onChange={(value) => {
+                try {
+                  onChangeTheme([name], JSON.parse(value.target.value))
+                } catch (error) {
+                  // TODO: parseのエラー処理
                 }
-                onChange={(value) => {
-                  try {
-                    onChangeTheme([name], JSON.parse(value.target.value))
-                  } catch (error) {
-                    // TODO: parseのエラー処理
-                  }
-                }}
-              />
-            ) : (
-              <VStack gap={0}>
-                <Text>{`{`}</Text>
+              }}
+            />
+          ) : (
+            <>
+              {isObj ? (
+                <VStack gap={0}>
+                  <Text>{`{`}</Text>
 
-                <Collapse isOpen={isOpenCollapse} unmountOnExit>
-                  <List pl="md" gap={0} borderLeftWidth="1px">
-                    {Object.entries(value).map(([key, value]) => (
-                      <RecursiveObjectItem
-                        key={key}
-                        name={key}
-                        value={value}
-                        keyTree={[name, key]}
-                        onChangeTheme={onChangeTheme}
-                      />
-                    ))}
-                  </List>
-                </Collapse>
+                  <Collapse isOpen={isOpenCollapse} unmountOnExit>
+                    <List pl="md" gap={0} borderLeftWidth="1px">
+                      {Object.entries(value).map(([key, value]) => (
+                        <RecursiveObjectItem
+                          key={key}
+                          name={key}
+                          value={value}
+                          keyTree={[name, key]}
+                          onChangeTheme={onChangeTheme}
+                        />
+                      ))}
+                    </List>
+                  </Collapse>
 
-                <Text>{`}`}</Text>
-              </VStack>
-            )}
+                  <Text>{`}`}</Text>
+                </VStack>
+              ) : (
+                <EditableField
+                  value={value}
+                  keyTree={[name]}
+                  onChangeTheme={onChangeTheme}
+                />
+              )}
+            </>
+          )}
 
-            <Button
-              variant="text"
-              size="xs"
-              leftIcon={isRaw || isFunc ? <EyeOff /> : <Eye />}
-              onClick={() => toggleRaw()}
-            >
-              Raw
-            </Button>
-          </HStack>
-        ) : (
-          <EditableField
-            value={value}
-            keyTree={[name]}
-            onChangeTheme={onChangeTheme}
-          />
-        )}
+          <Button
+            variant="ghost"
+            colorScheme="gray"
+            size="xs"
+            leftIcon={isRaw || isFunc ? <EyeOff /> : <Eye />}
+            onClick={() => toggleRaw()}
+          >
+            Raw
+          </Button>
+        </HStack>
       </Td>
     </Tr>
   )
