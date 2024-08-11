@@ -12,6 +12,7 @@
     "proptypes",
     "tses",
     "tseslint",
+    "commitlint",
     "typecheck",
     "yamcha"
   ],
