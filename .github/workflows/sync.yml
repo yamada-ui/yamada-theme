@@ -21,10 +21,10 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.BOT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           base: main
           delete-branch: true
-          commit-message: "ci(changesets): updated dependencies"
+          commit-message: "ci(changesets): version packages"
           title: "Updated dependencies"
           branch: changeset-release/main
           assignees: "hirotomoyamada"
