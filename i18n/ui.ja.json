@@ -13,8 +13,13 @@
   "component": {
     "theme-command-menu": {
       "change-to-list": "リストに変更",
+      "change-to-value": "値に変更",
       "add": "追加",
       "remove": "削除"
+    },
+    "theme-command-menu-modal": {
+      "header": "追加",
+      "submit": "追加"
     },
     "tree": {
       "home": "ホーム",

@@ -13,8 +13,13 @@
   "component": {
     "theme-command-menu": {
       "change-to-list": "Change to list",
+      "change-to-value": "Change to value",
       "add": "Add item",
       "remove": "Remove item"
+    },
+    "theme-command-menu-modal": {
+      "header": "Add item",
+      "submit": "Add"
     },
     "tree": {
       "home": "Home",

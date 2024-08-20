@@ -57,7 +57,7 @@ export const EditableField: FC<EditableFieldProps> = ({
   } else {
     return (
       <Editable
-        width="3xs"
+        minW="3xs"
         defaultValue={value.toString()}
         onChange={(value) => onChangeTheme(keyTree, value)}
       >

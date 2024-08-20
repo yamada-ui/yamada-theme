@@ -80,6 +80,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
         </VStack>
       ) : (
         <ThemeCommandMenu
+          value={value}
           keyTree={keyTree}
           onChangeTheme={onChangeTheme}
           onRemoveTheme={onRemoveTheme}
@@ -210,7 +211,6 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({
     },
   })
 
-  //TODO: 入れれるスタイルとか制限したい。
   const validationRules = {
     name: {
       required: true,
@@ -221,7 +221,6 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({
   }
 
   const onSubmit: SubmitHandler<TableItem> = ({ name, control }: TableItem) => {
-    console.log("submit")
     onChangeTheme([], { [name]: control })
 
     reset()
