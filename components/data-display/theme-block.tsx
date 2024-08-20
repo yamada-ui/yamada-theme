@@ -120,7 +120,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
           <Text onClick={() => toggle()}>{`${name} : {`}</Text>
 
           <Collapse isOpen={isOpen} unmountOnExit>
-            <List pl="md" gap={0} borderLeftWidth="1px">
+            <List pl="md" gap={0}>
               {Object.entries(value).map(([key, value]) => (
                 <RecursiveObjectItem
                   key={key}
@@ -180,6 +180,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                   onChangeTheme([name], JSON.parse(value.target.value))
                 } catch (error) {
                   // TODO: parseのエラー処理。React Hook Form使う？
+                  console.error("Error parsing JSON:", error)
                 }
               }}
             />
@@ -190,7 +191,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                   <Text>{`{`}</Text>
 
                   <Collapse isOpen={isOpenCollapse} unmountOnExit>
-                    <List pl="md" gap={0} borderLeftWidth="1px">
+                    <List pl="md" gap={0}>
                       {Object.entries(value).map(([key, value]) => (
                         <RecursiveObjectItem
                           key={key}
