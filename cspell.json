@@ -4,6 +4,7 @@
     "autosize",
     "CSSUI",
     "dirents",
+    "hirotomoyamada",
     "fontawesome",
     "guldo",
     "HIROTOMO",
@@ -15,6 +16,7 @@
     "proptypes",
     "tses",
     "tseslint",
+    "commitlint",
     "typecheck",
     "yamcha"
   ],
