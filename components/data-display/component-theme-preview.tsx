@@ -6,6 +6,7 @@ import {
   HStack,
   IconButton,
   merge,
+  omitObject,
   Tab,
   TabList,
   TabPanel,
@@ -73,6 +74,13 @@ export const ComponentThemePreview = memo(
           setTheme(newTheme)
           onChangeThemeProp?.(newTheme)
         }
+
+      const onRemoveTheme = (key: string) => (keyTree: string[]) => {
+        const newTheme = omitObject(theme, [[key, ...keyTree].join(".")])
+
+        setTheme(newTheme)
+        onChangeThemeProp?.(newTheme)
+      }
 
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>
@@ -155,6 +163,7 @@ export const ComponentThemePreview = memo(
                   <ThemeBlock
                     styles={styles}
                     onChangeTheme={onChangeTheme(key)}
+                    onRemoveTheme={onRemoveTheme(key)}
                   />
                 </TabPanel>
               )

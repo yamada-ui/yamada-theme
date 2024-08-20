@@ -2,9 +2,6 @@ import { Eye, EyeOff, Plus } from "@yamada-ui/lucide"
 import {
   ComponentMultiStyle,
   ComponentStyle,
-  Editable,
-  EditableInput,
-  EditablePreview,
   isObject,
   List,
   ListItem,
@@ -23,7 +20,6 @@ import {
   HStack,
   useBoolean,
   Collapse,
-  isArray,
   Button,
   Textarea,
   isFunction,
@@ -31,78 +27,27 @@ import {
   Input,
   Tfoot,
   IconButton,
+  ContextMenu,
+  ContextMenuTrigger,
+  MenuList,
+  MenuItem,
+  MenuDivider,
 } from "@yamada-ui/react"
 import { FC } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { EditableField } from "components/forms"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 // TODO: 項目の追加機能
-type OnChangeTheme = (keyTree: string[], value: any) => void
-
-type EditableFieldProps = {
-  value: any
-  keyTree: string[]
-  onChangeTheme: OnChangeTheme
-}
-
-const EditableField: FC<EditableFieldProps> = ({
-  value,
-  keyTree,
-  onChangeTheme,
-}) => {
-  if (isArray(value)) {
-    return (
-      <HStack gap="sm">
-        <Text>[</Text>
-
-        <Editable
-          width="5xs"
-          textAlign="center"
-          defaultValue={value[0]}
-          onChange={(valueProp) =>
-            onChangeTheme(keyTree, [valueProp, value[1]])
-          }
-        >
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
-
-        <Text>:</Text>
-
-        <Editable
-          width="5xs"
-          textAlign="center"
-          defaultValue={value[1]}
-          onChange={(valueProp) =>
-            onChangeTheme(keyTree, [value[0], valueProp])
-          }
-        >
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
-
-        <Text>]</Text>
-      </HStack>
-    )
-  } else {
-    return (
-      <Editable
-        width="3xs"
-        defaultValue={value.toString()}
-        onChange={(value) => onChangeTheme(keyTree, value)}
-      >
-        <EditablePreview />
-        <EditableInput />
-      </Editable>
-    )
-  }
-}
+export type OnChangeTheme = (keyTree: string[], value: any) => void
+type OnRemoveTheme = (keyTree: string[]) => void
 
 type RecursiveObjectItemProps = {
   name: string
   value: any
   keyTree: string[]
   onChangeTheme: OnChangeTheme
+  onRemoveTheme: OnRemoveTheme
 }
 
 const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
@@ -110,6 +55,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
   value,
   keyTree,
   onChangeTheme,
+  onRemoveTheme,
 }) => {
   const [isOpen, { toggle }] = useBoolean(true)
 
@@ -128,6 +74,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
                   value={value}
                   keyTree={keyTree ? [...keyTree, key] : [key]}
                   onChangeTheme={onChangeTheme}
+                  onRemoveTheme={onRemoveTheme}
                 />
               ))}
             </List>
@@ -136,15 +83,33 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
           <Text>{`}`}</Text>
         </VStack>
       ) : (
-        <HStack gap={0}>
-          <Text>{`${name} : `}</Text>
+        <ContextMenu>
+          <ContextMenuTrigger>
+            <HStack gap={0}>
+              <Text>{`${name} : `}</Text>
 
-          <EditableField
-            value={value}
-            keyTree={keyTree}
-            onChangeTheme={onChangeTheme}
-          />
-        </HStack>
+              <EditableField
+                value={value}
+                keyTree={keyTree}
+                onChangeTheme={onChangeTheme}
+              />
+            </HStack>
+          </ContextMenuTrigger>
+
+          <MenuList>
+            <MenuItem>Change to list</MenuItem>
+            <MenuItem>Add item</MenuItem>
+            <MenuDivider />
+            <MenuItem
+              color="red.500"
+              onClick={() => {
+                onRemoveTheme(keyTree)
+              }}
+            >
+              Remove item
+            </MenuItem>
+          </MenuList>
+        </ContextMenu>
       )}
     </ListItem>
   )
@@ -154,9 +119,15 @@ type TableRowProps = {
   name: string
   value: any
   onChangeTheme: OnChangeTheme
+  onRemoveTheme: OnRemoveTheme
 }
 
-const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
+const TableRow: FC<TableRowProps> = ({
+  name,
+  value,
+  onChangeTheme,
+  onRemoveTheme,
+}) => {
   const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
   const [isRaw, { toggle: toggleRaw }] = useBoolean(false)
 
@@ -199,6 +170,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
                           value={value}
                           keyTree={[name, key]}
                           onChangeTheme={onChangeTheme}
+                          onRemoveTheme={onRemoveTheme}
                         />
                       ))}
                     </List>
@@ -234,6 +206,7 @@ const TableRow: FC<TableRowProps> = ({ name, value, onChangeTheme }) => {
 export type ThemeBlockProps = {
   styles?: UIStyle
   onChangeTheme: OnChangeTheme
+  onRemoveTheme: OnRemoveTheme
 }
 
 type TableItem = {
@@ -241,7 +214,11 @@ type TableItem = {
   control: string
 }
 
-export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
+export const ThemeBlock: FC<ThemeBlockProps> = ({
+  styles,
+  onChangeTheme,
+  onRemoveTheme,
+}) => {
   const { control, handleSubmit, reset } = useForm<TableItem>({
     defaultValues: {
       name: "",
@@ -285,6 +262,7 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({ styles, onChangeTheme }) => {
               name={key}
               value={value}
               onChangeTheme={onChangeTheme}
+              onRemoveTheme={onRemoveTheme}
             />
           ))}
         </Tbody>
