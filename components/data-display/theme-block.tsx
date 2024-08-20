@@ -27,20 +27,16 @@ import {
   Input,
   Tfoot,
   IconButton,
-  ContextMenu,
-  ContextMenuTrigger,
-  MenuList,
-  MenuItem,
-  MenuDivider,
 } from "@yamada-ui/react"
 import { FC } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { EditableField } from "components/forms"
+import { ThemeCommandMenu } from "components/overlay"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 // TODO: 項目の追加機能
 export type OnChangeTheme = (keyTree: string[], value: any) => void
-type OnRemoveTheme = (keyTree: string[]) => void
+export type OnRemoveTheme = (keyTree: string[]) => void
 
 type RecursiveObjectItemProps = {
   name: string
@@ -83,33 +79,21 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
           <Text>{`}`}</Text>
         </VStack>
       ) : (
-        <ContextMenu>
-          <ContextMenuTrigger>
-            <HStack gap={0}>
-              <Text>{`${name} : `}</Text>
+        <ThemeCommandMenu
+          keyTree={keyTree}
+          onChangeTheme={onChangeTheme}
+          onRemoveTheme={onRemoveTheme}
+        >
+          <HStack gap={0}>
+            <Text>{`${name} : `}</Text>
 
-              <EditableField
-                value={value}
-                keyTree={keyTree}
-                onChangeTheme={onChangeTheme}
-              />
-            </HStack>
-          </ContextMenuTrigger>
-
-          <MenuList>
-            <MenuItem>Change to list</MenuItem>
-            <MenuItem>Add item</MenuItem>
-            <MenuDivider />
-            <MenuItem
-              color="red.500"
-              onClick={() => {
-                onRemoveTheme(keyTree)
-              }}
-            >
-              Remove item
-            </MenuItem>
-          </MenuList>
-        </ContextMenu>
+            <EditableField
+              value={value}
+              keyTree={keyTree}
+              onChangeTheme={onChangeTheme}
+            />
+          </HStack>
+        </ThemeCommandMenu>
       )}
     </ListItem>
   )

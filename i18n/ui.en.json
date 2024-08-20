@@ -11,9 +11,10 @@
     "back-to-app": "Back to App"
   },
   "component": {
-    "authors": {
-      "description": "Created by",
-      "unknown": "Unknown"
+    "theme-command-menu": {
+      "change-to-list": "Change to list",
+      "add": "Add item",
+      "remove": "Remove item"
     },
     "tree": {
       "home": "Home",
