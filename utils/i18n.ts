@@ -3,7 +3,7 @@ import CONTENT_EN from "../i18n/content.en.json"
 import CONTENT_JA from "../i18n/content.ja.json"
 import UI_EN from "../i18n/ui.en.json"
 import UI_JA from "../i18n/ui.ja.json"
-import { Content } from "search"
+import type { Content } from "search"
 
 export type Locale = (typeof locales)[number]
 
