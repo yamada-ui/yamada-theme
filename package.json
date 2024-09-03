@@ -28,6 +28,10 @@
     "test:ui": "vitest --ui --watch --coverage"
   },
   "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "@emotion/cache": "^11.13.0",
+    "@emotion/react": "^11.13.0",
+    "@emotion/weak-memoize": "^0.4.0",
     "@vercel/analytics": "^1.3.1",
     "@vercel/speed-insights": "^1.0.12",
     "@yamada-ui/calendar": "^1.7.0",

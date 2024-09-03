@@ -1,7 +1,6 @@
 import {
   Compass,
   ExternalLink,
-  GitPullRequestArrow,
   Layers,
   LayoutTemplate,
   ChartLineIcon,
@@ -9,9 +8,9 @@ import {
   Paintbrush,
   PanelsTopLeft,
   Table,
-  Tags,
   TextCursorInput,
   Text as TextIcon,
+  Component as ComponentIcon,
 } from "@yamada-ui/lucide"
 import {
   Center,
@@ -75,7 +74,7 @@ export const Tree = memo(
 type RecursiveListItemProps = ComponentCategoryGroup & { isNested?: boolean }
 
 const RecursiveListItem: FC<RecursiveListItemProps> = memo(
-  ({ icon, title, slug, items = [], isNested, isExpanded }) => {
+  ({ icon, name: title, slug, items = [], isNested, isExpanded }) => {
     const [isOpen, { on, toggle }] = useBoolean(isExpanded)
 
     useEffect(() => {
@@ -273,17 +272,14 @@ const ListItemIcon: FC<ListItemIconProps> = memo(({ icon, ...rest }) => {
     case "text":
       return <TextIcon fontSize="2xl" {...rest} />
 
-    case "tags":
-      return <Tags fontSize="2xl" {...rest} />
-
-    case "git-pull-request-arrow":
-      return <GitPullRequestArrow fontSize="2xl" {...rest} />
-
     case "yamada-ui":
-      return <YamadaUI boxSize="1.5rem" {...rest} />
+      return <YamadaUI fontSize="2xl" {...rest} />
 
     case "paintbrush":
       return <Paintbrush fontSize="2xl" {...rest} />
+
+    case "component":
+      return <ComponentIcon fontSize="2xl" {...rest} />
 
     default:
       return <></>

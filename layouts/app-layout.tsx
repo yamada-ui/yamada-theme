@@ -1,7 +1,7 @@
 import type { StackProps } from "@yamada-ui/react"
-import { Center, VStack } from "@yamada-ui/react"
+import { Center, HStack, VStack } from "@yamada-ui/react"
 import { type FC } from "react"
-import { Footer, Header } from "components/layouts"
+import { Footer, Header, Sidebar } from "components/layouts"
 import { SEO } from "components/media-and-icons"
 
 type AppLayoutOptions = { title?: string; description?: string }
@@ -29,7 +29,11 @@ export const AppLayout: FC<AppLayoutProps> = ({
           px={{ base: "lg", md: "md" }}
           {...rest}
         >
-          {children}
+          <HStack alignItems="flex-start" w="full" maxW="full" gap="0">
+            <Sidebar display={{ base: "flex", lg: "none" }} />
+
+            {children}
+          </HStack>
         </VStack>
       </Center>
 

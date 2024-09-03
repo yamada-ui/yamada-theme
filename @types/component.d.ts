@@ -18,12 +18,6 @@ declare module "component" {
     html_url: string
   }
 
-  type ComponentCode = {
-    name: string
-    path: string
-    code: string
-  }
-
   type ComponentPaths = {
     component: string
     theme: string | null
@@ -34,7 +28,6 @@ declare module "component" {
     name: string
     slug: string
     paths: ComponentPaths
-    components: ComponentCode[]
     metadata: ComponentMetadata | null
   }
 
@@ -55,7 +48,9 @@ declare module "component" {
   }
 
   type MetadataOptions = {
-    container: ComponentContainerProps
+    iframe?: boolean
+    container?: ComponentContainerProps
+    fileList?: string[]
   }
 
   type SharedMetadata = {
@@ -63,6 +58,7 @@ declare module "component" {
     authors?: Author[] | null
     labels?: string[] | null
     options?: MetadataOptions | null
+    order?: number | null
   }
 
   type CommonMetadata = {
@@ -70,6 +66,7 @@ declare module "component" {
     description: string
   }
 
+  //TODO: metadataをどうするか考える
   type OriginMetadata = LocaleMetadata<CommonMetadata> & SharedMetadata
 
   type ComponentMetadata = CommonMetadata & SharedMetadata
