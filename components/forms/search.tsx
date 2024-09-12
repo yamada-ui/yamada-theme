@@ -37,7 +37,7 @@ import {
   useRef,
   useState,
 } from "react"
-import type { FC, KeyboardEvent, RefObject } from "react"
+import type { FC, KeyboardEvent, KeyboardEventHandler, RefObject } from "react"
 import scrollIntoView from "scroll-into-view-if-needed"
 import { useI18n } from "contexts/i18n-context"
 import { useEventListener } from "hooks/use-event-listener"
@@ -81,7 +81,11 @@ export const Search = memo(
 
       ev.preventDefault()
 
-      isOpen ? onClose() : onOpen()
+      if (isOpen) {
+        onClose()
+      } else {
+        onOpen()
+      }
     })
 
     return (
@@ -154,7 +158,9 @@ const SearchModal: FC<SearchModalProps> = memo(
     const directionRef = useRef<"up" | "down">("down")
     const compositionRef = useRef<boolean>(false)
     const containerRef = useRef<HTMLDivElement>(null)
-    const itemRefs = useRef<Map<number, RefObject<HTMLDivElement>>>(new Map())
+    const itemRefs = useRef<Map<number, RefObject<HTMLAnchorElement>>>(
+      new Map(),
+    )
 
     const hits = useMemo(() => {
       if (query.length < 1) return []
@@ -176,7 +182,10 @@ const SearchModal: FC<SearchModalProps> = memo(
 
         eventRef.current = "keyboard"
 
-        const actions: Record<string, Function | undefined> = {
+        const actions: Record<
+          string,
+          KeyboardEventHandler<HTMLInputElement> | undefined
+        > = {
           ArrowDown: () => {
             if (selectedIndex + 1 === hits.length) return
 
@@ -305,7 +314,7 @@ const SearchModal: FC<SearchModalProps> = memo(
             <VStack as="ul" gap="sm">
               {hits.map(({ title, type, slug, hierarchy }, index) => {
                 const isSelected = index === selectedIndex
-                const ref = createRef<HTMLDivElement>()
+                const ref = createRef<HTMLAnchorElement>()
 
                 itemRefs.current.set(index, ref)
 
