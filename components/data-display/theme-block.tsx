@@ -37,7 +37,6 @@ import { EditableField } from "components/forms"
 import { ThemeCommandMenu } from "components/overlay"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
-// TODO: 項目の追加機能
 export type OnChangeTheme = (keyTree: string[], value: any) => void
 export type OnRemoveTheme = (keyTree: string[]) => void
 
@@ -134,9 +133,9 @@ const TableRow: FC<TableRowProps> = ({
               defaultValue={
                 isFunc ? value.toString() : JSON.stringify(value, null, 4)
               }
-              onChange={(value) => {
+              onChange={(valueProp) => {
                 try {
-                  onChangeTheme([name], JSON.parse(value.target.value))
+                  onChangeTheme([name], JSON.parse(valueProp.target.value))
                 } catch (error) {
                   // TODO: parseのエラー処理。React Hook Form使う？
                   console.error("Error parsing JSON:", error)

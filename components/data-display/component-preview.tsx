@@ -185,7 +185,7 @@ export const ComponentPreview = memo(
                       minH="48"
                       {...rest}
                     >
-                      <Box boxSize="full" flex="1" {...containerProps}>
+                      <Box boxSize="full" flex="1" p="md" {...containerProps}>
                         <Component />
                       </Box>
                     </Center>
@@ -204,7 +204,7 @@ export const ComponentPreview = memo(
             minH="48"
             {...rest}
           >
-            <Box boxSize="full" flex="1" {...containerProps}>
+            <Box boxSize="full" flex="1" p="md" {...containerProps}>
               <Component />
             </Box>
           </Center>

@@ -5,7 +5,6 @@ import {
   handlerAll,
   HStack,
   IconButton,
-  merge,
   omitObject,
   Tab,
   TabList,
@@ -15,7 +14,6 @@ import {
 import type {
   ComponentMultiStyle,
   ComponentStyle,
-  Dict,
   TabsProps,
 } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
@@ -63,13 +61,14 @@ export const ComponentThemePreview = memo(
 
       const onChangeTheme =
         (key: string) => (keyTree: string[], value: any) => {
-          const newTheme = merge(
-            theme,
-            [key, ...keyTree].reduceRight(
-              (acc, key) => ({ [key]: acc }),
-              value as unknown as Dict,
-            ),
-          )
+          const newTheme = JSON.parse(JSON.stringify(theme))
+
+          const computedKeyTree = [key, ...keyTree]
+          computedKeyTree.reduce((acc, curr, index) => {
+            if (index === computedKeyTree.length - 1) acc[curr] = value
+
+            return acc[curr]
+          }, newTheme)
 
           setTheme(newTheme)
           onChangeThemeProp?.(newTheme)
