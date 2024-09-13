@@ -76,7 +76,7 @@ export const ComponentThemePreview = memo(
         }
 
       const onRemoveTheme = (key: string) => (keyTree: string[]) => {
-        const newTheme = omitObject(theme, [[key, ...keyTree].join(".")])
+        const newTheme = omitObject<Dict>(theme, [[key, ...keyTree].join(".")])
 
         setTheme(newTheme)
         onChangeThemeProp?.(newTheme)
