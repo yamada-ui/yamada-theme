@@ -14,6 +14,7 @@ import {
 import type {
   ComponentMultiStyle,
   ComponentStyle,
+  Dict,
   TabsProps,
 } from "@yamada-ui/react"
 import type { SetStateAction } from "react"
