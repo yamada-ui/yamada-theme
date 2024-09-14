@@ -40,7 +40,7 @@ const sourceFilePaths = {
 /** @type {Pick<TSESLintConfig, "name" | "ignores">} */
 const ignoreTSESConfig = {
   name: "@yamada-theme/ignores/base",
-  ignores: ["**/.next", "**/node_modules", "**/pnpm-lock.yaml"],
+  ignores: [".next/**", "node_modules/**", "**/pnpm-lock.yaml"],
 }
 
 /** @type {Pick<TSESLintConfig, "name" | "languageOptions">} */
