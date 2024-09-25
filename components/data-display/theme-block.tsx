@@ -29,12 +29,14 @@ import {
   Input,
   Tfoot,
   IconButton,
+  isUndefined,
 } from "@yamada-ui/react"
 import type { FC } from "react"
 import type { SubmitHandler } from "react-hook-form"
 import { Controller, useForm } from "react-hook-form"
 import { EditableField } from "components/forms"
 import { ThemeCommandMenu } from "components/overlay"
+import { stringToUIStyle } from "utils/object"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 export type OnChangeTheme = (keyTree: string[], value: any) => void
@@ -115,11 +117,14 @@ const TableRow: FC<TableRowProps> = ({
   onChangeTheme,
   onRemoveTheme,
 }) => {
-  const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
-  const [isRaw, { toggle: toggleRaw }] = useBoolean(false)
-
   const isFunc = isFunction(value)
   const isObj = isObject(value)
+  const isUndef = isUndefined(value)
+
+  const strictRaw = isFunc || isUndef
+
+  const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
+  const [isRaw, { toggle: toggleRaw }] = useBoolean(strictRaw)
 
   return (
     <Tr>
@@ -127,20 +132,15 @@ const TableRow: FC<TableRowProps> = ({
 
       <Td>
         <HStack alignItems="flex-start" justifyContent="space-between">
-          {isRaw || isFunc ? (
+          {isRaw || strictRaw ? (
             <Textarea
               autosize
               defaultValue={
                 isFunc ? value.toString() : JSON.stringify(value, null, 4)
               }
-              onChange={(valueProp) => {
-                try {
-                  onChangeTheme([name], JSON.parse(valueProp.target.value))
-                } catch (error) {
-                  // TODO: parseのエラー処理。React Hook Form使う？
-                  console.error("Error parsing JSON:", error)
-                }
-              }}
+              onChange={(valueProp) =>
+                onChangeTheme([name], stringToUIStyle(valueProp.target.value))
+              }
             />
           ) : (
             <>
@@ -179,7 +179,8 @@ const TableRow: FC<TableRowProps> = ({
             variant="ghost"
             colorScheme="gray"
             size="xs"
-            leftIcon={isRaw || isFunc ? <EyeOff /> : <Eye />}
+            leftIcon={isRaw || strictRaw ? <EyeOff /> : <Eye />}
+            disabled={strictRaw}
             onClick={() => toggleRaw()}
           >
             Raw
