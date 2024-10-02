@@ -2,10 +2,10 @@ import type { ComponentStyle, Theme } from "@yamada-ui/react"
 
 let db: IDBDatabase
 
-const DATA_BASE_VER: number = 1
-const DATA_BASE_NAME: string = "YamadaThemeDB"
-const DATA_BASE_STORE: string = "theme"
-const DATA_BASE_KEY_PATH: string = "id"
+const DATA_BASE_VER = 1
+const DATA_BASE_NAME = "YamadaThemeDB"
+const DATA_BASE_STORE = "theme"
+const DATA_BASE_KEY_PATH = "id"
 
 export interface SaveThemeData {
   id: string
