@@ -1,5 +1,5 @@
-import { Text, VStack } from "@yamada-ui/react"
 import type { NextPage } from "next"
+import { Text, VStack } from "@yamada-ui/react"
 import { NextLinkButton } from "components/navigation"
 import { useI18n } from "contexts/i18n-context"
 import { AppLayout } from "layouts/app-layout"
@@ -9,15 +9,15 @@ const Page: NextPage = () => {
 
   return (
     <AppLayout
-      title={t("not-found.title")}
       description={t("not-found.description")}
+      title={t("not-found.title")}
     >
-      <VStack alignItems="center" py="3xl" gap="xl">
+      <VStack alignItems="center" gap="xl" py="3xl">
         <VStack alignItems="center">
           <Text
             as="h1"
-            fontSize={{ base: "5xl", md: "3xl", sm: "2xl" }}
             fontFamily="heading"
+            fontSize={{ base: "5xl", sm: "2xl", md: "3xl" }}
             fontWeight="bold"
             textAlign="center"
           >
@@ -25,10 +25,10 @@ const Page: NextPage = () => {
           </Text>
 
           <Text
-            w="full"
-            maxW="2xl"
             fontSize={{ base: "xl", sm: "lg" }}
+            maxW="2xl"
             textAlign="center"
+            w="full"
           >
             {tc("not-found.message")}
           </Text>

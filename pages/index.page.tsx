@@ -8,10 +8,10 @@ const Page: NextPage<AppProps> = () => {
 
   return (
     <AppLayout
-      title={t("app.title")}
       description={t("app.description")}
       gap="lg"
-    ></AppLayout>
+      title={t("app.title")}
+    />
   )
 }
 

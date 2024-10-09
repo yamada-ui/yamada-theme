@@ -12,13 +12,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
     "jsx": "preserve",
     "incremental": true,
     "importHelpers": true,
     "removeComments": true,
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types", "./@types", "./node_modules"],
-    "types": ["vitest/globals"]
+    "typeRoots": ["./node_modules/@types", "./@types"]
   },
   "include": [
     "@types",
