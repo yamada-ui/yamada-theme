@@ -1,27 +1,27 @@
 export const SEO = {
   NEXT_SEO_PROPS: {
-    titleTemplate: "%s - Yamada Theme",
-    siteUrl: "https://yamada-theme.com",
     openGraph: {
       type: "website",
-      locale: "ja_JP",
-      url: "https://yamada-theme.com",
-      title: "Yamada Theme",
       description: "",
-      site_name: "Yamada Theme:",
       images: [
         {
+          alt: "",
+          height: 630,
           url: "https://yamada-theme.com/og.png",
           width: 1200,
-          height: 630,
-          alt: "",
         },
       ],
+      locale: "ja_JP",
+      site_name: "Yamada Theme:",
+      title: "Yamada Theme",
+      url: "https://yamada-theme.com",
     },
+    siteUrl: "https://yamada-theme.com",
+    titleTemplate: "%s - Yamada Theme",
     twitter: {
+      cardType: "summary_large_image",
       handle: "@yamada_club",
       site: "@yamada_club",
-      cardType: "summary_large_image",
     },
   },
 }

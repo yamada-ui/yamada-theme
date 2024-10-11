@@ -1,6 +1,6 @@
 import type { GetServerSidePropsContext } from "next"
 
-export const getServerSideCommonProps = async ({
+export const getServerSideCommonProps = ({
   req,
 }: GetServerSidePropsContext) => {
   const cookies = req.headers.cookie ?? ""

@@ -9,65 +9,65 @@ type LocaleMetadata<Y> = { [key in DefaultLocale]: Y } & {
 }
 
 declare module "component" {
-  type ContentType = "categoryGroup" | "category" | "component"
+  type ContentType = "category" | "categoryGroup" | "component"
 
-  type Author = {
+  interface Author {
     id: number
-    login: string
     avatar_url: string
     html_url: string
+    login: string
   }
 
-  type ComponentCode = {
+  interface ComponentCode {
     name: string
-    path: string
     code: string
+    path: string
   }
 
-  type ComponentPaths = {
+  interface ComponentPaths {
     component: string
-    theme: string | null
-    config: string | null
+    config: null | string
+    theme: null | string
   }
 
-  type Component = {
+  interface Component {
     name: string
-    slug: string
-    paths: ComponentPaths
     components: ComponentCode[]
     metadata: ComponentMetadata | null
-  }
-
-  type ComponentCategoryGroup = Partial<Metadata> & {
-    name: string
+    paths: ComponentPaths
     slug: string
+  }
+
+  type ComponentCategoryGroup = {
+    name: string
     isExpanded: boolean
-    icon?: string | null
+    slug: string
+    icon?: null | string
     items?: ComponentCategoryGroup[]
-  }
+  } & Partial<Metadata>
 
-  type ComponentCategory = Omit<ComponentCategoryGroup, "items"> & {
+  type ComponentCategory = {
     items?: Component[]
-  }
+  } & Omit<ComponentCategoryGroup, "items">
 
-  type ComponentContainerProps = HTMLUIProps<"div"> & {
+  type ComponentContainerProps = {
     centerContent?: boolean
-  }
+  } & HTMLUIProps
 
-  type MetadataOptions = {
+  interface MetadataOptions {
     container: ComponentContainerProps
   }
 
-  type SharedMetadata = {
-    icon?: string | null
+  interface SharedMetadata {
     authors?: Author[] | null
-    labels?: string[] | null
+    icon?: null | string
+    labels?: null | string[]
     options?: MetadataOptions | null
   }
 
-  type CommonMetadata = {
-    title: string
+  interface CommonMetadata {
     description: string
+    title: string
   }
 
   type OriginMetadata = LocaleMetadata<CommonMetadata> & SharedMetadata
