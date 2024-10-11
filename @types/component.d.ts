@@ -9,61 +9,63 @@ type LocaleMetadata<Y> = { [key in DefaultLocale]: Y } & {
 }
 
 declare module "component" {
-  type ContentType = "categoryGroup" | "category" | "component"
+  type ContentType = "category" | "categoryGroup" | "component"
 
-  type Author = {
+  interface Author {
     id: number
-    login: string
     avatar_url: string
     html_url: string
+    login: string
   }
 
-  type ComponentPaths = {
+  interface ComponentPaths {
     component: string
-    theme: string | null
-    config: string | null
+    config: null | string
+    theme: null | string
   }
 
-  type Component = {
+  interface Component {
     name: string
-    slug: string
-    paths: ComponentPaths
     metadata: ComponentMetadata | null
-  }
-
-  type ComponentCategoryGroup = Partial<Metadata> & {
-    name: string
+    paths: ComponentPaths
+    paths: ComponentPaths
     slug: string
+    slug: string
+  }
+
+  type ComponentCategoryGroup = {
+    name: string
     isExpanded: boolean
-    icon?: string | null
+    slug: string
+    icon?: null | string
     items?: ComponentCategoryGroup[]
-  }
+  } & Partial<Metadata>
 
-  type ComponentCategory = Omit<ComponentCategoryGroup, "items"> & {
+  type ComponentCategory = {
     items?: Component[]
-  }
+  } & Omit<ComponentCategoryGroup, "items">
 
-  type ComponentContainerProps = HTMLUIProps<"div"> & {
+  type ComponentContainerProps = {
     centerContent?: boolean
-  }
+  } & HTMLUIProps
 
-  type MetadataOptions = {
-    iframe?: boolean
+  interface MetadataOptions {
     container?: ComponentContainerProps
     fileList?: string[]
+    iframe?: boolean
   }
 
-  type SharedMetadata = {
-    icon?: string | null
+  interface SharedMetadata {
     authors?: Author[] | null
-    labels?: string[] | null
+    icon?: null | string
+    labels?: null | string[]
     options?: MetadataOptions | null
-    order?: number | null
+    order?: null | number
   }
 
-  type CommonMetadata = {
-    title: string
+  interface CommonMetadata {
     description: string
+    title: string
   }
 
   //TODO: metadataをどうするか考える

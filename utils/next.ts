@@ -1,8 +1,10 @@
+import type { Component, ComponentCategoryGroup } from "component"
 import type {
   GetServerSidePropsContext,
   GetStaticPathsContext,
   GetStaticPropsContext,
 } from "next"
+import type { Locale } from "./i18n"
 import { toArray } from "./array"
 import {
   checkInvalidLabels,
@@ -10,10 +12,8 @@ import {
   getComponentCategoryGroup,
   getComponentPaths,
 } from "./component"
-import type { Locale } from "./i18n"
-import type { Component, ComponentCategoryGroup } from "component"
 
-export const getServerSideCommonProps = async ({
+export const getServerSideCommonProps = ({
   req,
 }: GetServerSidePropsContext) => {
   const cookies = req.headers.cookie ?? ""
@@ -32,12 +32,12 @@ export const getStaticCommonProps = async ({
 export const getStaticComponentProps =
   (categoryGroupName: string) =>
   async ({
-    params,
     locale,
+    params,
   }: GetStaticPropsContext): Promise<{
     props: {
-      component?: Component
       componentTree: ComponentCategoryGroup[]
+      component?: Component
     }
     notFound?: boolean
   }> => {
@@ -56,7 +56,7 @@ export const getStaticComponentProps =
 
     const props = { component, componentTree }
 
-    return { props, notFound: !component }
+    return { notFound: !component, props }
   }
 
 export const getStaticComponentPaths =
@@ -64,5 +64,5 @@ export const getStaticComponentPaths =
   async ({ locales }: GetStaticPathsContext) => {
     const paths = await getComponentPaths(categoryGroupName)(locales)
 
-    return { paths, fallback: false }
+    return { fallback: false, paths }
   }

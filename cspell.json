@@ -1,25 +1,29 @@
 {
-  "flagWords": [],
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "language": "en",
   "words": [
     "autosize",
     "CSSUI",
     "dirents",
     "hirotomoyamada",
+    "commitlint",
     "fontawesome",
     "guldo",
     "HIROTOMO",
+    "hirotomoyamada",
     "HTMLUI",
+    "jiti",
     "kurillin",
     "lefthook",
     "lucide",
     "multilines",
+    "nonconstructor",
+    "nonoctal",
     "proptypes",
     "tses",
     "tseslint",
-    "commitlint",
     "typecheck",
     "yamcha"
   ],
-  "language": "en",
-  "version": "0.2"
+  "ignorePaths": ["node_modules", "pnpm-lock.yaml"]
 }

@@ -1,26 +1,44 @@
 export const MENU = [
   {
-    icon: "yamada-ui",
-    name: "yamada-ui",
-    href: { en: "https://yamada-ui.com", ja: "https://yamada-ui.com/ja" },
+    href: {
+      en: "https://github.com/yamada-ui/yamada-theme/issues/new?labels=enhancement&projects=&template=feature_request.yml",
+      ja: "https://github.com/yamada-ui/yamada-theme/issues/new?labels=enhancement&projects=&template=feature_request.ja.yml",
+    },
+    name: "request",
+    icon: "tags",
     isExternal: true,
   },
   {
-    icon: "paintbrush",
-    name: "yamada-colors",
+    href: {
+      en: "https://github.com/yamada-ui/yamada-theme/blob/main/CONTRIBUTING.md",
+      ja: "https://github.com/yamada-ui/yamada-theme/blob/main/CONTRIBUTING.ja.md",
+    },
+    name: "create",
+    icon: "git-pull-request-arrow",
+    isExternal: true,
+  },
+  {
+    href: { en: "https://yamada-ui.com", ja: "https://yamada-ui.com/ja" },
+    name: "yamada-ui",
+    icon: "yamada-ui",
+    isExternal: true,
+  },
+  {
     href: {
       en: "https://yamada-colors.app",
       ja: "https://yamada-colors.app/ja",
     },
+    name: "yamada-colors",
+    icon: "paintbrush",
     isExternal: true,
   },
   {
-    icon: "component",
-    name: "yamada-components",
     href: {
       en: "https://yamada-components.app",
       ja: "https://yamada-components.app/ja",
     },
+    name: "yamada-components",
+    icon: "component",
     isExternal: true,
   },
 ]
