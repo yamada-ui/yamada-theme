@@ -1,12 +1,23 @@
-import { Eye, EyeOff, Plus } from "@yamada-ui/lucide"
 import type {
   ComponentMultiStyle,
   ComponentStyle,
   RadioItem,
   UIStyle,
 } from "@yamada-ui/react"
+import type { FC } from "react"
+import type { SubmitHandler } from "react-hook-form"
+import { Eye, EyeOff, Plus } from "@yamada-ui/lucide"
 import {
+  Box,
+  Button,
+  Collapse,
+  FormControl,
+  HStack,
+  IconButton,
+  Input,
+  isFunction,
   isObject,
+  isUndefined,
   List,
   ListItem,
   NativeTable,
@@ -14,44 +25,36 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
+  Textarea,
+  Tfoot,
   Th,
   Thead,
   Tr,
-  Text,
-  VStack,
-  HStack,
   useBoolean,
-  Collapse,
-  Button,
-  Textarea,
-  isFunction,
-  FormControl,
-  Input,
-  Tfoot,
-  IconButton,
+  VStack,
 } from "@yamada-ui/react"
-import type { FC } from "react"
-import type { SubmitHandler } from "react-hook-form"
-import { Controller, useForm } from "react-hook-form"
 import { EditableField } from "components/forms"
 import { ThemeCommandMenu } from "components/overlay"
+import { Controller, useForm } from "react-hook-form"
+import { stringToUIStyle } from "utils/object"
 
 // NOTE: https://unruffled-hoover-de9320.netlify.app/?path=/story/displays-card--with-cover
 export type OnChangeTheme = (keyTree: string[], value: any) => void
 export type OnRemoveTheme = (keyTree: string[]) => void
 
-type RecursiveObjectItemProps = {
+interface RecursiveObjectItemProps {
   name: string
-  value: any
   keyTree: string[]
+  value: any
   onChangeTheme: OnChangeTheme
   onRemoveTheme: OnRemoveTheme
 }
 
 const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
   name,
-  value,
   keyTree,
+  value,
   onChangeTheme,
   onRemoveTheme,
 }) => {
@@ -64,13 +67,13 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
           <Text onClick={() => toggle()}>{`${name} : {`}</Text>
 
           <Collapse isOpen={isOpen} unmountOnExit>
-            <List pl="md" gap={0}>
+            <List gap={0} pl="md">
               {Object.entries(value).map(([key, value]) => (
                 <RecursiveObjectItem
                   key={key}
                   name={key}
+                  keyTree={keyTree.length ? [...keyTree, key] : [key]}
                   value={value}
-                  keyTree={keyTree ? [...keyTree, key] : [key]}
                   onChangeTheme={onChangeTheme}
                   onRemoveTheme={onRemoveTheme}
                 />
@@ -82,8 +85,8 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
         </VStack>
       ) : (
         <ThemeCommandMenu
-          value={value}
           keyTree={keyTree}
+          value={value}
           onChangeTheme={onChangeTheme}
           onRemoveTheme={onRemoveTheme}
         >
@@ -91,8 +94,8 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
             <Text>{`${name} : `}</Text>
 
             <EditableField
-              value={value}
               keyTree={keyTree}
+              value={value}
               onChangeTheme={onChangeTheme}
             />
           </HStack>
@@ -102,7 +105,7 @@ const RecursiveObjectItem: FC<RecursiveObjectItemProps> = ({
   )
 }
 
-type TableRowProps = {
+interface TableRowProps {
   name: string
   value: any
   onChangeTheme: OnChangeTheme
@@ -115,11 +118,14 @@ const TableRow: FC<TableRowProps> = ({
   onChangeTheme,
   onRemoveTheme,
 }) => {
-  const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
-  const [isRaw, { toggle: toggleRaw }] = useBoolean(false)
-
   const isFunc = isFunction(value)
   const isObj = isObject(value)
+  const isUndef = isUndefined(value)
+
+  const strictRaw = isFunc || isUndef
+
+  const [isOpenCollapse, { toggle: toggleCollapse }] = useBoolean(true)
+  const [isRaw, { toggle: toggleRaw }] = useBoolean(strictRaw)
 
   return (
     <Tr>
@@ -127,35 +133,30 @@ const TableRow: FC<TableRowProps> = ({
 
       <Td>
         <HStack alignItems="flex-start" justifyContent="space-between">
-          {isRaw || isFunc ? (
+          {isRaw || strictRaw ? (
             <Textarea
               autosize
               defaultValue={
                 isFunc ? value.toString() : JSON.stringify(value, null, 4)
               }
-              onChange={(valueProp) => {
-                try {
-                  onChangeTheme([name], JSON.parse(valueProp.target.value))
-                } catch (error) {
-                  // TODO: parseのエラー処理。React Hook Form使う？
-                  console.error("Error parsing JSON:", error)
-                }
-              }}
+              onChange={(valueProp) =>
+                onChangeTheme([name], stringToUIStyle(valueProp.target.value))
+              }
             />
           ) : (
-            <>
+            <Box>
               {isObj ? (
                 <VStack gap={0}>
                   <Text>{`{`}</Text>
 
                   <Collapse isOpen={isOpenCollapse} unmountOnExit>
-                    <List pl="md" gap={0}>
+                    <List gap={0} pl="md">
                       {Object.entries(value).map(([key, value]) => (
                         <RecursiveObjectItem
                           key={key}
                           name={key}
-                          value={value}
                           keyTree={[name, key]}
+                          value={value}
                           onChangeTheme={onChangeTheme}
                           onRemoveTheme={onRemoveTheme}
                         />
@@ -167,19 +168,20 @@ const TableRow: FC<TableRowProps> = ({
                 </VStack>
               ) : (
                 <EditableField
-                  value={value}
                   keyTree={[name]}
+                  value={value}
                   onChangeTheme={onChangeTheme}
                 />
               )}
-            </>
+            </Box>
           )}
 
           <Button
-            variant="ghost"
             colorScheme="gray"
             size="xs"
-            leftIcon={isRaw || isFunc ? <EyeOff /> : <Eye />}
+            variant="ghost"
+            disabled={strictRaw}
+            leftIcon={isRaw || strictRaw ? <EyeOff /> : <Eye />}
             onClick={() => toggleRaw()}
           >
             Raw
@@ -190,13 +192,13 @@ const TableRow: FC<TableRowProps> = ({
   )
 }
 
-export type ThemeBlockProps = {
-  styles?: UIStyle
+export interface ThemeBlockProps {
   onChangeTheme: OnChangeTheme
   onRemoveTheme: OnRemoveTheme
+  styles?: UIStyle
 }
 
-type TableItem = {
+interface TableItem {
   name: string
   control: string
 }
@@ -258,12 +260,12 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({
               <Controller
                 name="name"
                 control={control}
-                rules={validationRules.name}
                 render={({ field, fieldState }) => (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input {...field} id="name" placeholder="name" />
                   </FormControl>
                 )}
+                rules={validationRules.name}
               />
             </Th>
             <Th>
@@ -271,12 +273,12 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({
                 <Controller
                   name="control"
                   control={control}
-                  rules={validationRules.control}
                   render={({ field, fieldState }) => (
                     <FormControl isInvalid={fieldState.invalid}>
                       <Input {...field} id="control" placeholder="control" />
                     </FormControl>
                   )}
+                  rules={validationRules.control}
                 />
 
                 <IconButton
@@ -293,20 +295,20 @@ export const ThemeBlock: FC<ThemeBlockProps> = ({
   )
 }
 
-export type DefaultPropsBlockProps = {
-  theme: ComponentStyle | ComponentMultiStyle
+export interface DefaultPropsBlockProps {
   colorSchemes: string[]
+  theme: ComponentMultiStyle | ComponentStyle
   onChangeTheme: OnChangeTheme
 }
 
 export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
-  theme,
   colorSchemes,
+  theme,
   onChangeTheme,
 }) => {
-  const defaultProps = theme["defaultProps"]
-  const variants = theme["variants"]
-  const sizes = theme["sizes"]
+  const defaultProps = theme.defaultProps
+  const variants = theme.variants
+  const sizes = theme.sizes
 
   const variantItems: RadioItem[] =
     variants !== undefined
@@ -324,13 +326,10 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
         }))
       : []
 
-  const colorSchemeItems: RadioItem[] =
-    colorSchemes !== undefined
-      ? colorSchemes.map((value) => ({
-          label: value,
-          value: value,
-        }))
-      : []
+  const colorSchemeItems: RadioItem[] = colorSchemes.map((value) => ({
+    label: value,
+    value: value,
+  }))
 
   return (
     <TableContainer>
@@ -348,9 +347,9 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
 
             <Td>
               <RadioGroup
-                w="60%"
-                items={variantItems}
                 defaultValue={defaultProps?.variant as string | undefined}
+                items={variantItems}
+                w="60%"
                 onChange={(value) => {
                   onChangeTheme(["variant"], value)
                 }}
@@ -362,9 +361,9 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
 
             <Td>
               <RadioGroup
-                w="60%"
-                items={sizeItems}
                 defaultValue={defaultProps?.size as string | undefined}
+                items={sizeItems}
+                w="60%"
                 onChange={(value) => {
                   onChangeTheme(["size"], value)
                 }}
@@ -376,9 +375,9 @@ export const DefaultPropsBlock: FC<DefaultPropsBlockProps> = ({
 
             <Td>
               <RadioGroup
-                w="60%"
-                items={colorSchemeItems}
                 defaultValue={defaultProps?.colorScheme as string | undefined}
+                items={colorSchemeItems}
+                w="60%"
                 onChange={(value) => {
                   onChangeTheme(["colorScheme"], value)
                 }}
