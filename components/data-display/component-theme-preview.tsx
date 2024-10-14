@@ -1,3 +1,12 @@
+import type {
+  ComponentMultiStyle,
+  ComponentStyle,
+  Dict,
+  TabsProps,
+} from "@yamada-ui/react"
+import type { Component } from "component"
+import type { ThemeDirection } from "layouts/component-layout"
+import type { SetStateAction } from "react"
 import { X } from "@yamada-ui/lucide"
 import {
   defaultTheme,
@@ -5,34 +14,26 @@ import {
   handlerAll,
   HStack,
   IconButton,
+  merge,
   omitObject,
   Tab,
   TabList,
   TabPanel,
   Tabs,
 } from "@yamada-ui/react"
-import type {
-  ComponentMultiStyle,
-  ComponentStyle,
-  Dict,
-  TabsProps,
-} from "@yamada-ui/react"
-import type { SetStateAction } from "react"
+import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
 import { memo, useState } from "react"
 import { DefaultPropsBlock, ThemeBlock } from "./theme-block"
-import type { Component } from "component"
-import { LayoutHorizontal, LayoutVertical } from "components/media-and-icons"
-import type { ThemeDirection } from "layouts/component-layout"
 
-export type ComponentThemePreviewProps = TabsProps &
-  Pick<Component, "name"> & {
+export type ComponentThemePreviewProps = {
     themeDirection?: ThemeDirection
+    onChangeTheme?: (theme: ComponentMultiStyle | ComponentStyle) => void
     onThemeDirectionChange?: (
       valueOrFunc: SetStateAction<ThemeDirection>,
     ) => void
     onThemePreviewClose?: () => void
-    onChangeTheme?: (theme: ComponentStyle | ComponentMultiStyle) => void
-  }
+  } &
+  Pick<Component, "name"> & TabsProps
 
 export const ComponentThemePreview = memo(
   forwardRef<ComponentThemePreviewProps, "div">(
@@ -40,9 +41,9 @@ export const ComponentThemePreview = memo(
       {
         name,
         themeDirection,
+        onChangeTheme: onChangeThemeProp,
         onThemeDirectionChange,
         onThemePreviewClose,
-        onChangeTheme: onChangeThemeProp,
         ...rest
       },
       ref,
@@ -62,14 +63,13 @@ export const ComponentThemePreview = memo(
 
       const onChangeTheme =
         (key: string) => (keyTree: string[], value: any) => {
-          const newTheme = JSON.parse(JSON.stringify(theme))
-
-          const computedKeyTree = [key, ...keyTree]
-          computedKeyTree.reduce((acc, curr, index) => {
-            if (index === computedKeyTree.length - 1) acc[curr] = value
-
-            return acc[curr]
-          }, newTheme)
+          const newTheme = merge(
+            theme,
+            [key, ...keyTree].reduceRight(
+              (acc, key) => ({ [key]: acc }),
+              value as unknown as Dict,
+            ),
+          )
 
           setTheme(newTheme)
           onChangeThemeProp?.(newTheme)
@@ -84,22 +84,22 @@ export const ComponentThemePreview = memo(
 
       return (
         <Tabs ref={ref} {...rest} onChange={handlerAll(rest.onChange)}>
-          <TabList position="sticky" top="0" bg={["white", "black"]}>
+          <TabList bg={["white", "black"]} position="sticky" top="0">
             <HStack
-              tabIndex={-1}
-              mb="-px"
-              w="full"
               gap="0"
+              mb="-px"
               overflowX="auto"
               scrollbarWidth="none"
+              tabIndex={-1}
+              w="full"
               _scrollbar={{ display: "none" }}
             >
               {Object.keys(theme).map((key) => (
                 <Tab
                   key={key}
+                  color="muted"
                   mb="0"
                   overflow="visible"
-                  color="muted"
                   _focusVisible={{}}
                 >
                   {key}
@@ -107,14 +107,14 @@ export const ComponentThemePreview = memo(
               ))}
             </HStack>
 
-            <HStack ms="md" me="sm" gap="0">
+            <HStack gap="0" me="sm" ms="md">
               {themeDirection ? (
                 <IconButton
-                  aria-label="Change code preview direction"
                   size="sm"
                   variant="ghost"
-                  display={{ base: "inline-flex", md: "none" }}
+                  aria-label="Change code preview direction"
                   color="muted"
+                  display={{ base: "inline-flex", md: "none" }}
                   icon={
                     isVertical ? (
                       <LayoutHorizontal boxSize="4" />
@@ -131,9 +131,9 @@ export const ComponentThemePreview = memo(
               ) : null}
               {onThemePreviewClose ? (
                 <IconButton
-                  aria-label="Close code preview"
                   size="sm"
                   variant="ghost"
+                  aria-label="Close code preview"
                   color="muted"
                   fontSize="lg"
                   icon={<X />}
@@ -148,15 +148,15 @@ export const ComponentThemePreview = memo(
               return (
                 <TabPanel key={key}>
                   <DefaultPropsBlock
-                    theme={theme}
                     colorSchemes={colorSchemes}
+                    theme={theme}
                     onChangeTheme={onChangeTheme(key)}
                   />
                 </TabPanel>
               )
             } else {
               const styles =
-                theme[key as keyof (ComponentStyle | ComponentMultiStyle)]
+                theme[key as keyof (ComponentMultiStyle | ComponentStyle)]
 
               return (
                 <TabPanel key={key}>

@@ -34,7 +34,7 @@ const App: FC<AppPropsWithConfig> = ({ Component, router, pageProps }) => {
       <Head>
         <meta content="IE=edge" httpEquiv="X-UA-Compatible" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Yamada Components</title>
+        <title>Yamada Theme</title>
         <link href="/favicon.svg" rel="icon" />
       </Head>
 
